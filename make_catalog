@@ -1,0 +1,6 @@
+echo "# Test database catalog"
+echo "# SHASUM  UUID  OriginalPath/OriginalFilename"
+
+find $@ -type f -exec register.sh \{\} \; 
+
+
