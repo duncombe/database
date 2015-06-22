@@ -1,6 +1,17 @@
-echo "# Test database catalog"
-echo "# SHASUM  UUID  OriginalPath/OriginalFilename"
+#! /bin/bash
+# Enters a file into a database and creates a catalog entry
 
-find $@ -type f -exec bash register.sh \{\} \; -printf "%P\n" | paste -d " "  - - 
+export CATALOG=`pwd`/test-catalog
+export DATABASE=`pwd`/test-database
+
+if [ ! -e $CATALOG ]; then 
+	{
+	echo "# Test database catalog"
+	echo "# SHASUM  UUID  OriginalPath/OriginalFilename"
+	} > $CATALOG
+fi
+
+find $@ -type f -exec bash $(pwd)/register.sh \{\} \; -printf "%P\n" |
+	paste -d " "  - -  
 
 
