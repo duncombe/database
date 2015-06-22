@@ -1,6 +1,6 @@
 echo "# Test database catalog"
 echo "# SHASUM  UUID  OriginalPath/OriginalFilename"
 
-find $@ -type f -exec register.sh \{\} \; 
+find $@ -type f -exec bash register.sh \{\} \; -printf "%P\n" | paste -d " "  - - 
 
 
