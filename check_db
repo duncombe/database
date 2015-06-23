@@ -3,17 +3,10 @@
 DATABASE=${1:-database}
 TEMPSUM=`mktemp`
 
-find $DATABASE -type f -printf "%P \n" -print | paste -d " "  - - | sed "s/\///" > $TEMPSUM
-shasum -c $TEMPSUM
+find $DATABASE -type f -printf "%P \n" -print |
+	paste -d " "  - - | sed "s/\///" > $TEMPSUM
+shasum -c $TEMPSUM 
 rm $TEMPSUM
 
 # will want to check the database for full directories (directories with close
 # to 256 files in them):
-# This command will count the files in directories:
-#
-# find database/ -type d -print -exec sh -c "ls -1 {} | wc -l " \; | paste - - 
-#
-# For those directories where number of files is > 256, split again the
-# checksum and fan out into another layer of folders.
-#
-
