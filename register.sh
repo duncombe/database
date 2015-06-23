@@ -15,7 +15,7 @@ filepath=`echo ${srcfile#$srcdir}`
 if [ ! -f $database/$dir/$file ]; then 
 	mkdir -p $database/$dir
 	cp -i "$@" $database/$dir/$file
- 	echo Copying in $file 1>&2
+ 	echo Copying in $srcfile 1>&2
 fi
 
 if [ ! -f $catalog ]; then

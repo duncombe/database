@@ -5,6 +5,8 @@
 export CATALOG=`pwd`/test-catalog
 export DATABASE=`pwd`/test-database
 export SRCDIR=${1:?}
+# ensure that SRCDIR goes out with a trailing /
+SRCDIR=${SRCDIR%/}/
 
 if [ ! -e $CATALOG ]; then 
 	{
