@@ -7,6 +7,8 @@ for a filename
 -	calculate a uuid  
 -	print the shasum, the uuid, and the original filename   
 
+Miscellaneous notes:  
+- http://zetcode.com/db/mysqlpython/ for working with MySQL in Python
 
 
 
