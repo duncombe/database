@@ -21,13 +21,16 @@ child1.set("title_text","Title Text")
 # ['title', 'summary', 'keywords']
 
 name="Joseph Schmo"
-phone="+27 21 555 5999"
+phonenumber="+27 21 555 5999"
 
 contactinfo=etree.Element("contact_info")
 contactinfo.set("contact_name",name)
-contactinfo.set("contact_phone",phone)
+contactinfo.set("contact_phone",phonenumber)
 contactinfo.text=name
 
+phone=etree.SubElement(contactinfo,'phone')
+phone.set("number",phonenumber)
+phone.text=phonenumber
 
 root.append(contactinfo)
 
@@ -43,7 +46,6 @@ file.write(etree.tostring(root, pretty_print=True))
 file.close
 
 print "All done!\n"
-
 
 
 # print etree.tostring(child2, pretty_print=True)
