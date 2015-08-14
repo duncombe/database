@@ -1,0 +1,31 @@
+# read a catalog and pull files from the database to recreate the raw WAF
+
+export CATALOG=`pwd`/test-catalog
+export DATABASE=`pwd`/test-database
+
+export SRCDIR=${1:?}
+
+SRCDIR=${SRCDIR%/}/
+
+cat   $CATALOG | awk -v DB=$DATABASE -v SD=${SRCDIR} '
+		/^#/{next}
+		{
+		dir=substr($0,1,2)
+		file=substr($0,3,94)
+		rawfile=substr($0,137)
+		# cmd="ls -l \"" DB "/" dir "/" file "\""
+		"dirname \"" rawfile "\"" | getline path
+		cmd="mkdir -pv \"" SD path "\""
+
+		# print cmd
+		# print rawfile
+		system(cmd) 
+
+		cmd="rsync -auv \"" DB "/" dir "/" file "\" \"" SD rawfile"\""
+		print cmd
+		system(cmd) 
+		}' 
+
+
+
+
