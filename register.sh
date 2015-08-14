@@ -8,8 +8,9 @@ srcdir=${SRCDIR:-srcdir}
 srcfile="${@}"
 
 chksum=`cat "$srcfile" | shasum -a 384 | cut -f1 -d\ `
-dir=`echo $chksum | cut -b-2`
-file=`echo $chksum | cut -b3-`
+
+dir=`echo $chksum |  sed -n 's=^\(..\)\(..\)\(..\).*$=\1/\2/\3=p'`
+file=`echo $chksum | cut -b7- `
 filepath=`echo ${srcfile#$srcdir}`
 
 if [ ! -f $database/$dir/$file ]; then 
@@ -29,3 +30,5 @@ if ( ! grep "$filepath" $catalog > /dev/null ) ; then
 else
  	echo \"$@\" already in database 1>&2
 fi
+
+

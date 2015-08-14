@@ -2,8 +2,8 @@
 # Enters a file into a database and creates a catalog entry
 # 
 
-export CATALOG=`pwd`/test-catalog
-export DATABASE=`pwd`/test-database
+export CATALOG=`pwd`/test-catalog1
+export DATABASE=`pwd`/test-database1
 export SRCDIR=${1:?}
 # ensure that SRCDIR goes out with a trailing /
 SRCDIR=${SRCDIR%/}/
