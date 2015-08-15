@@ -1,4 +1,5 @@
-database/
-test-database/
-catalog
-test-catalog
+database*/
+test-database*/
+catalog*
+test-catalog*
+RAWDATA/
