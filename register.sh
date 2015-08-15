@@ -5,8 +5,11 @@
 
 catalog=${CATALOG:-catalog}
 database=${DATABASE:-database}
-srcdir=${SRCDIR:-srcdir}
-srcfile="${@}"
+srcdir="${SRCDIR:-srcdir}"
+
+# 
+# srcfile="${@}"
+srcfile="${1}"
 
 # checksum the file
 chksum=`cat "$srcfile" | shasum -a 384 | cut -f1 -d\ `
@@ -17,14 +20,14 @@ dir=`echo $chksum |  sed -n 's=^\(..\)\(..\)\(..\).*$=\1/\2/\3=p'`
 file=`echo $chksum | cut -b7- `
 
 # Make a note of the original filepath 
-filepath=`echo ${srcfile#$srcdir}`
+filepath=`echo "${srcfile#$srcdir}"`
 
 # check if the file exists in the database
 # if not, copy it in
 if [ ! -f $database/$dir/$file ]; then 
 	mkdir -p $database/$dir
 	cp -i "$@" $database/$dir/$file
- 	echo Copying in $srcfile 1>&2
+ 	echo Copying in "$srcfile" 1>&2
 fi
 
 # Test if the catalog exists, 
@@ -39,7 +42,7 @@ if ( ! grep "$filepath" $catalog > /dev/null ) ; then
 	uuid=`uuidgen -r`
 	echo  "$chksum  $uuid  $filepath" >> ${catalog}
 else
- 	echo \"$@\" already in database 1>&2
+ 	echo \""$srcfile"\" already in database 1>&2
 fi
 
 

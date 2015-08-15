@@ -7,23 +7,35 @@ export SRCDIR=${1:?}
 
 SRCDIR=${SRCDIR%/}/
 
-cat   $CATALOG | awk -v DB=$DATABASE -v SD=${SRCDIR} '
+cat   $CATALOG |
+	# tail -n 10 |
+	awk -v DB=${DATABASE} -v SD=${SRCDIR} '
 		/^#/{next}
 		{
 		dir=substr($0,1,2)
 		file=substr($0,3,94)
 		rawfile=substr($0,137)
 		# cmd="ls -l \"" DB "/" dir "/" file "\""
-		"dirname \"" rawfile "\"" | getline path
+
+		cmd="dirname \"" rawfile "\""
+		# print cmd
+
+		cmd | getline path ;  close(cmd)
+
 		cmd="mkdir -pv \"" SD path "\""
 
 		# print cmd
 		# print rawfile
-		system(cmd) 
+		system(cmd) ; close(cmd)
 
-		cmd="rsync -auv \"" DB "/" dir "/" file "\" \"" SD rawfile"\""
-		print cmd
-		system(cmd) 
+		if (length(file)!=0 && length(rawfile)!=0){
+			cmd="rsync -auv \"" DB "/" dir "/" file "\" \"" SD rawfile"\""
+			print cmd
+			system(cmd); close(cmd)
+			}
+		else{
+			print "Bad catalog entry: " FNR " (" NR ")" > "/dev/stderr"
+			}
 		}' 
 
 
