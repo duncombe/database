@@ -38,11 +38,12 @@ fi
 
 # check if the filepath is already in the catalog. If not create a UUID and 
 # add the details to the catalog
-if ( ! grep "$filepath" $catalog > /dev/null ) ; then 
+if ( ! grep -v "^#" $catalog | grep "$filepath" > /dev/null ) ; then 
 	uuid=`uuidgen -r`
 	echo  "$chksum  $uuid  $filepath" >> ${catalog}
 else
  	echo \""$srcfile"\" already in database 1>&2
+	# echo "$filepath" 1>&2
 fi
 
 
