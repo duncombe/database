@@ -1,7 +1,10 @@
-database/
-test-database/
-catalog
-test-catalog
-marker
 .*.swp
 \#*
+database*/
+test-database*/
+catalog*
+test-catalog*
+marker
+RAWDATA/
+LINKDATA/
+
