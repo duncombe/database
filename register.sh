@@ -1,8 +1,18 @@
 #! /bin/bash
-# this little script creates a uuid, calculates a checksum and prints them
-# out. 
-# The script is run through find.
+# 
+# this little script
+# 	gets a uuid
+# 	calculates a checksum 
+# 	prints them out. 
+# 
+# The script is expecting to be called from this find command:
+#    find ${SRCDIR} -type f -exec bash $(pwd)/register.sh \{\} \;
+# 
+# output to catalog is 
+# SHASUM \t FILEUUID \t ACCESSION_ID \t COLLECTION_UUID \t filenamepath
 
+accession=${ACCESSION:-?}
+collection=${COLLECTION:-?}
 catalog=${CATALOG:-catalog}
 database=${DATABASE:-database}
 srcdir="${SRCDIR:-srcdir}"
@@ -40,7 +50,7 @@ fi
 # add the details to the catalog
 if ( ! grep -v "^#" $catalog | grep "$filepath" > /dev/null ) ; then 
 	uuid=`uuidgen -r`
-	echo  "$chksum  $uuid  $filepath" >> ${catalog}
+	echo -e "$chksum\t$uuid\t$accession\t$collection\t$filepath" >> ${catalog}
 else
  	echo \""$srcfile"\" already in database 1>&2
 	# echo "$filepath" 1>&2

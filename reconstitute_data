@@ -2,6 +2,9 @@
 
 # read a catalog and pull files from the database to recreate the raw WAF
 
+echo catalog structure has changed. This script needs to be rewritten.
+exit 1
+
 export CATALOG=`pwd`/test-catalog1
 export DATABASE=`pwd`/test-database1
 
