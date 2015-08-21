@@ -8,14 +8,24 @@
 # The script is expecting to be called from this find command:
 #    find ${SRCDIR} -type f -exec bash $(pwd)/register.sh \{\} \;
 # 
-# output to catalog is 
-# SHASUM \t FILEUUID \t ACCESSION_ID \t COLLECTION_UUID \t filenamepath
 
 accession=${ACCESSION:-?}
 collection=${COLLECTION:-?}
 catalog=${CATALOG:-catalog}
 database=${DATABASE:-database}
 srcdir="${SRCDIR:-srcdir}"
+
+if [ ! -d ${database} ]; then 
+	mkdir -p $database
+fi
+
+if [ ! -e ${catalog} ]; then 
+	{
+	echo "# Test database catalog"
+	# output to catalog is 
+	echo "# SHASUM \t FILEUUID \t ACCESSION_ID \t COLLECTION_UUID \t filenamepath "
+	} > $catalog
+fi
 
 # 
 # srcfile="${@}"
