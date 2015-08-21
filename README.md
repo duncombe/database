@@ -102,8 +102,9 @@ DATA/
 ```
 
 
-Glossary
+## Glossary
 
-collection has no data: a superset dsescribing a bunch of related accessions
-accession is a bunch of related files.
-dataset informal term . often maps to accession, not always.
+*accession* is a bunch of related files.   
+*collection* has no data: a superset dsescribing a bunch of related accessions   
+*dataset* informal term . often maps to accession, not always.   
+
