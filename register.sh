@@ -9,17 +9,18 @@
 #    find ${SRCDIR} -type f -exec bash $(pwd)/register.sh \{\} \;
 # 
 
-accession=${ACCESSION:-?}
-collection=${COLLECTION:-?}
-catalog=${CATALOG:-catalog}
-database=${DATABASE:-database}
-srcdir="${SRCDIR:-srcdir}"
+# ensure we have set all these environment variables in the calling script
+accession=${ACCESSION:?}
+collection=${COLLECTION:?}
+catalog=${CATALOG:?}
+database=${DATABASE:?}
+srcdir="${SRCDIR:?}"
 
 if [ ! -d ${database} ]; then 
 	mkdir -p $database
 fi
 
-if [ ! -e ${catalog} ]; then 
+if [ ! -f ${catalog} ]; then 
 	{
 	echo "# Test database catalog"
 	# output to catalog is 
@@ -60,7 +61,8 @@ fi
 # add the details to the catalog
 if ( ! grep -v "^#" $catalog | grep "$filepath" > /dev/null ) ; then 
 	uuid=`uuidgen -r`
-	echo -e "$chksum\t$uuid\t$accession\t$collection\t$filepath" >> ${catalog}
+## THIS LINE MUST CORRESPOND WITH THE COMMENT WHEN THE DATABASE WAS CREATED
+	echo -e "${chksum}\t${uuid}\t${accession}\t${collection}\t${filepath}" >> ${catalog}
 else
  	echo \""$srcfile"\" already in database 1>&2
 	# echo "$filepath" 1>&2
