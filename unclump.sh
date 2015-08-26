@@ -1,7 +1,17 @@
 SAVED=0
 EXISTS=0
+SPLITDIR=/tmp/small1
+
+SPLITDIR=${SPLITDIR%/}/
+
+[ ! -e $SPLITDIR ] && mkdir -p $SPLITDIR
+
+# sed 's=^\(..\)\(..\)\(..\)=\1/\2/\3/=' `
+# sed 's=^\(..\)\(..\)=\1/\2/=' `
+
 for f in $@ ; do
-	SAVEPATH=/tmp/small/`echo $(basename $f) | sed 's=^\(..\)\(..\)\(..\)=\1/\2/\3/=' `
+	SAVEPATH=${SPLITDIR}`echo $(basename $f) |
+		sed 's=^\(..\)=\1/=' `
 	if [ ! -e $SAVEPATH ]; then
 		mkdir -p $(dirname $SAVEPATH)
 		cp -i $f $SAVEPATH
@@ -11,5 +21,5 @@ for f in $@ ; do
 	fi
 done
 echo $SAVED saved 
-echo $EXISTS already exists 
+echo $EXISTS already exist
 
