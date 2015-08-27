@@ -1,7 +1,10 @@
+.*.swp
+\#*
 database*/
 test-database*/
 catalog*
 test-catalog*
+marker
 RAWDATA/
 LINKDATA/
 
