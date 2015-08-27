@@ -1,0 +1,17 @@
+
+# test catalog for various out of order conditions
+
+awk '	BEGIN{}
+	/^#/{next}
+	{ if ($2 in UUID){print "Duplicate UUID\!"} else {UUID[$2]++}
+	  # if ($1 in SHASUM){print "Duplicate SHASUM"}
+	  SHASUM[$1]++
+	FILE[$1,$2]=substr($0,137)
+	}
+	END{ for (var in FILE){
+			split(var,i,SUBSEP)
+			if (SHASUM[i[1]]>2){ print i[1],i[2],FILE[var] }
+	      	}
+	}
+	' $@
+
