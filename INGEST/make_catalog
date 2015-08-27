@@ -1,0 +1,25 @@
+#! /bin/bash
+# Enters a collection into a database and creates a catalog entry
+# 
+
+# export CATALOG=`pwd`/test-catalog1
+# export DATABASE=`pwd`/test-database1
+export SRCDIR=${1:?}
+
+export CATALOG=${CATALOG:?}
+export DATABASE=${DATABASE:?}
+
+# ensure that SRCDIR goes out with a trailing /
+SRCDIR="${SRCDIR%/}/"
+
+# generate a collection UUID and a accession identifier
+export ACCESSION=`date +"%Y%m%d%H%M%S"`
+export COLLECTION=`uuidgen`
+
+# echo $ACCESSION
+# echo $COLLECTION
+
+# descend through SRCDIR and register all files and directories
+find "${SRCDIR}" -type f -exec bash $(pwd)/register.sh \{\} \;
+
+

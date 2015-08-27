@@ -1,0 +1,49 @@
+#! /bin/bash
+
+# read a catalog and pull files from the database to recreate the raw WAF
+
+echo catalog structure has changed. This script needs to be rewritten.
+exit 1
+
+export CATALOG=`pwd`/test-catalog1
+export DATABASE=`pwd`/test-database1
+
+export SRCDIR=${1:?}
+
+SRCDIR=${SRCDIR%/}/
+
+cat   $CATALOG |
+	# tail -n 10 |
+	awk -v DB=${DATABASE} -v SD=${SRCDIR} '
+		/^#/{next}
+		{
+		dir=substr($1,1,2) "/" substr($1,3,2) "/" substr($1,5,2)
+		file=substr($1,7)
+		rawfile=substr($0,137)
+
+		# cmd="ls -l \"" DB "/" dir "/" file "\""
+
+		cmd="dirname \"" rawfile "\""
+		# print cmd
+
+		cmd | getline path ;  close(cmd)
+
+		cmd="mkdir -pv \"" SD path "\""
+
+		# print cmd
+		# print rawfile
+		system(cmd) ; close(cmd)
+
+		if (length(file)!=0 && length(rawfile)!=0){
+			cmd="rsync -auv \"" DB "/" dir "/" file "\" \"" SD rawfile"\""
+			print cmd
+			system(cmd); close(cmd)
+			}
+		else{
+			print "Bad catalog entry: " FNR " (" NR ")" > "/dev/stderr"
+			}
+		}' 
+
+
+
+
