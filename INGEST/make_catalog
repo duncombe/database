@@ -12,6 +12,7 @@ export DATABASE=${DATABASE:?}
 # ensure that SRCDIR goes out with a trailing /
 SRCDIR="${SRCDIR%/}/"
 
+
 # generate a collection UUID and a accession identifier
 export ACCESSION=`date +"%Y%m%d%H%M%S"`
 export COLLECTION=`uuidgen`

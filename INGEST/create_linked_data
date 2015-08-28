@@ -2,16 +2,16 @@
 
 # read a catalog and link files from the database to a WAF 
 
-export CATALOG=`pwd`/test-catalog1
-export DATABASE=`pwd`/test-database1
+# export CATALOG=`pwd`/test-catalog1
+# export DATABASE=`pwd`/test-database1
 
-export SRCDIR=${1:?}
+export LINKDIR=${1:?}
 
-SRCDIR=${SRCDIR%/}/
+LINKDIR=${LINKDIR%/}/
 
 cat   $CATALOG |
 	# tail -n 10 |
-	awk -v DB=${DATABASE} -v SD=${SRCDIR} '
+	awk -v DB=${DATABASE} -v SD=${LINKDIR} '
 		/^#/{next}
 		{
 		dir=substr($1,1,2) "/" substr($1,3,2) "/" substr($1,5,2)

@@ -20,6 +20,9 @@ if [ ! -d ${database} ]; then
 	mkdir -p $database
 fi
 
+# ensure that database has no trailing /
+database="${database%/}"
+
 if [ ! -f ${catalog} ]; then 
 	{
 	echo "# Test database catalog"
