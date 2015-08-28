@@ -23,11 +23,13 @@ fi
 # ensure that database has no trailing /
 database="${database%/}"
 
+MANIFESTFORM="# SHASUM \t FILEUUID \t ACCESSION_DATE \t COLLECTION_UUID \t filenamepath "
+
 if [ ! -f ${catalog} ]; then 
 	{
 	echo "# Test database catalog"
 	# output to catalog is 
-	echo "# SHASUM \t FILEUUID \t ACCESSION_ID \t COLLECTION_UUID \t filenamepath "
+	echo "${MANIFESTFORM}"
 	} > $catalog
 fi
 
@@ -40,8 +42,10 @@ chksum=`cat "$srcfile" | shasum -a 384 | cut -f1 -d\ `
 
 # split the directory and filename to determine where 
 # we are going to store it
-dir=`echo $chksum |  sed -n 's=^\(..\)\(..\)\(..\).*$=\1/\2/\3=p'`
-file=`echo $chksum | cut -b7- `
+# dir=`echo $chksum |  sed -n 's=^\(..\)\(..\)\(..\).*$=\1/\2/\3=p'`
+# file=`echo $chksum | cut -b7- `
+dir=`echo $chksum |  sed -n 's=^\(..\).*$=\1=p'`
+file=`echo $chksum | cut -b3- `
 
 # Make a note of the original filepath 
 filepath=`echo "${srcfile#$srcdir}"`
@@ -65,6 +69,7 @@ fi
 if ( ! grep -v "^#" $catalog | grep "$filepath" > /dev/null ) ; then 
 	uuid=`uuidgen -r`
 ## THIS LINE MUST CORRESPOND WITH THE COMMENT WHEN THE DATABASE WAS CREATED
+## MANIFESTFORM
 	echo -e "${chksum}\t${uuid}\t${accession}\t${collection}\t${filepath}" >> ${catalog}
 else
  	echo \""$srcfile"\" already in database 1>&2

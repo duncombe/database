@@ -13,9 +13,10 @@ export DATABASE=${DATABASE:?}
 SRCDIR="${SRCDIR%/}/"
 
 
-# generate a collection UUID and a accession identifier
-export ACCESSION=`date +"%Y%m%d%H%M%S"`
+# generate a collection UUID and an accession identifier
+# export ACCESSION=`date +"%Y%m%d%H%M%S"`
 export COLLECTION=`uuidgen`
+export ACCESSION=`date +"%Y%m%d"`
 
 # echo $ACCESSION
 # echo $COLLECTION
