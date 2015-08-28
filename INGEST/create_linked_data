@@ -5,13 +5,21 @@
 # export CATALOG=`pwd`/test-catalog1
 # export DATABASE=`pwd`/test-database1
 
+CATALOG=${CATALOG:?}
+DATABASE=${DATABASE:?}
+
 export LINKDIR=${1:?}
 
 LINKDIR=${LINKDIR%/}/
+DATABASE=${DATABASE%/}
+
+function relpath() { 
+  python -c "import os,sys;print(os.path.relpath(*(sys.argv[1:])))" "$@";
+}
 
 cat   $CATALOG |
 	# tail -n 10 |
-	awk -v DB=${DATABASE} -v SD=${LINKDIR} '
+	awk -v DB=${DATABASE} -v SD=$LINKDIR -v RRD=$(relpath $DATABASE $LINKDIR) '
 		BEGIN{FS="\t"}
 		/^#/{next}
 		{
@@ -28,14 +36,19 @@ cat   $CATALOG |
 
 		cmd | getline path ;  close(cmd)
 
-		cmd="mkdir -pv \"" SD path "\""
+		acc=$3 "=" $4
+
+		cmd="mkdir -pv \"" SD "/" acc "/" path "\""
+		N=split(path,a,"/")
+		RD=RRD
+		for (i=1;i<=N;i++){RD="../" RD}
 
 		# print cmd
 		# print rawfile
 		system(cmd) ; close(cmd)
 
 		if (length(file)!=0 && length(rawfile)!=0){
-			cmd="ln -sf \"" DB "/" dir "/" file "\" \"" SD rawfile"\""
+			cmd="ln -sf \"" RD "/" dir "/" file "\" \"" SD "/" acc "/" rawfile"\""
 			print cmd
 			system(cmd); close(cmd)
 			}
