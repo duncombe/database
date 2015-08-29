@@ -4,7 +4,7 @@
 
 # export CATALOG=`pwd`/test-catalog1
 # export DATABASE=`pwd`/test-database1
-export SRCDIR=${1:?}
+export SRCDIR="${1:?}"
 
 export CATALOG=${CATALOG:?}
 export DATABASE=${DATABASE:?}
@@ -17,6 +17,11 @@ SRCDIR="${SRCDIR%/}/"
 # export ACCESSION=`date +"%Y%m%d%H%M%S"`
 export COLLECTION=`uuidgen`
 export ACCESSION=`date +"%Y%m%d"`
+
+# echo $SRCDIR
+# echo $CATALOG
+# echo $DATABASE
+# echo $SRCDIR
 
 # echo $ACCESSION
 # echo $COLLECTION

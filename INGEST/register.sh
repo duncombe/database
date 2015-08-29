@@ -48,7 +48,8 @@ dir=`echo $chksum |  sed -n 's=^\(..\).*$=\1=p'`
 file=`echo $chksum | cut -b3- `
 
 # Make a note of the original filepath 
-filepath=`echo "${srcfile#$srcdir}"`
+
+filepath=`echo $(basename "$srcdir")/"${srcfile#$srcdir}"`
 
 # check if the file exists in the database
 # if not, copy it in

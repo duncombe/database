@@ -39,7 +39,7 @@ cat   $CATALOG |
 		acc=$3 "=" $4
 
 		cmd="mkdir -pv \"" SD "/" acc "/" path "\""
-		N=split(path,a,"/")
+		N=split(path,a,"/")+1
 		RD=RRD
 		for (i=1;i<=N;i++){RD="../" RD}
 
