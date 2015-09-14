@@ -19,7 +19,7 @@ function relpath() {
 
 cat   $CATALOG |
 	# tail -n 10 |
-	awk -v DB=${DATABASE} -v SD=$LINKDIR -v RRD=$(relpath $DATABASE $LINKDIR) '
+	awk -v DB=${DATABASE} -v SD=${LINKDIR} -v RRD=$(relpath $DATABASE $LINKDIR) '
 		BEGIN{FS="\t"}
 		/^#/{next}
 		{
@@ -59,4 +59,5 @@ cat   $CATALOG |
 
 
 
+# vi : se nowrap tw=0 :
 

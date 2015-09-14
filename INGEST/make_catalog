@@ -16,7 +16,7 @@ SRCDIR="${SRCDIR%/}/"
 # generate a collection UUID and an accession identifier
 # export ACCESSION=`date +"%Y%m%d%H%M%S"`
 export COLLECTION=`uuidgen`
-export ACCESSION=`date +"%Y%m%d"`
+export ACCESSION=`date -u +"%Y%m%dT%H%M"`
 
 # echo $SRCDIR
 # echo $CATALOG

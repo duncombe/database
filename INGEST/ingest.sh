@@ -2,7 +2,10 @@
 # make_catalog
 # register.sh
 # create_linked_data
-export CATALOG=manifest.txt
+
+# TODO: test for valid user:group
+
+export CATALOG="/DATA/PUBLICDATA/pub/manifest.txt"
 export DATABASE="/DATA/PUBLICDATA/pub/.DATABASE"
 
 ./make_catalog "${1:?}"
