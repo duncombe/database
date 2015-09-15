@@ -10,12 +10,12 @@ incorporated into a more mature product as one becomes available.
 
 Ingest flow is anticipated to be as follows:
 
-1. A i**set of data** is acquired, consisting of files arranged in some provider-defined directory structure. Files may be of any type.
+1. A **set of data** is acquired, consisting of files arranged in some provider-defined directory structure. Files may be of any type.
 Metadata as txt, XML, or JSON files may or may not be present.  
 In ISO-14721 terminology, this suite is termed a **Submission Information Package** (SIP).
 2. The SIP is assigned an **accession number**.
-   1. The accession number is proposed to be of the form YYYYMMDD=UUID, with the first eight digits indicating the date that the dataset was ingested 
-into the system, and the next following digits, a universally unique identifier. 
+   1. The accession number is proposed to be of the form YYYYMMDDTHHMM=UUID, with the first thirteen digits indicating the date and time that the dataset was ingested 
+into the system, an `=`-sign as separator, and the following digits, a universally unique identifier (UUID). 
 1. The UUID (accession number) and accession-level metadata are stored in an **accession information table**, ultimately as a SQL database,
 initially in a TSV manifest. For the sake of redundancy and guarding against database corruption, the TSV manifest will be maintained. 
 1. The SIP directory structure is read. 
@@ -34,7 +34,7 @@ would be stored as
 	Producer Title Abstract Date Time UUID Accession Fileslist
 ```
  etc. 
-1. Publication database is constructed by making symlinks to `$DATABASE`.
+1. Publication database is constructed by making symlinks to `$DATABASE`.  
 1. Metadata database includes xlinks to `$DATABASE`. 
 
 ## Database Structure
@@ -60,12 +60,12 @@ DATA/
 |  |        |- chladata.dat
 |  |        |- chladata.xls
 |  | 
-|  |- 20150825=3f9b441f-1e05-48e8-9d73-90dbd9123a0a
+|  |- 20150825T1254=3f9b441f-1e05-48e8-9d73-90dbd9123a0a
 |  
 |- ARCHIVE               # permanent record of raw SIP data
-|  |- YYYYMMDD-UUID.tar
-|  |- yyyymmdd-uuid.tar
-|  |- 20150825=3f9b441f-1e05-48e8-9d73-90dbd9123a0a.tar
+|  |- YYYYMMDDTHHMM-UUID.tar
+|  |- yyyymmddThhmm-uuid.tar
+|  |- 20150825T1254=3f9b441f-1e05-48e8-9d73-90dbd9123a0a.tar
 .  .
 .  .
 .  .
@@ -90,7 +90,7 @@ DATA/
 |  |- ff/ 
 |
 |- PUBLICDATA           # folder presented to clients; links from here point to the SHASUM database
-|  |- YYYYMMDD-UUID/
+|  |- YYYYMMDDTHHMM=UUID/
 |  |  |- My special data set/
 |  |     |- Bunch of directories with stupid names/
 |  |     |- More stupidly named directories/
@@ -98,7 +98,7 @@ DATA/
 |  |        |- A file with data in -> DATA/DATABASE/6e/315526e9ec5d349196538bf01b00ec6d740d045cbd66...5771
 |  |        |- A file with no data in -> DATA/DATABASE/38/b060a751ac96384cd9327eb1b1e36a21fdb71114b...b95b
 |  |  
-|  |- yyyymmdd-uuid/
+|  |- yyyymmddThhmm=uuid/
 |  |  |- Cruise 321/
 |  |     |- CTD/
 |  |     |- XBT/
@@ -106,7 +106,7 @@ DATA/
 |  |        |- chladata.dat -> DATA/DATABASE/2d/91bec7158d942b3c7ed26a0b627f55d00ee8e0c0921283884d07...10a6
 |  |        |- chladata.xls -> DATA/DATABASE/13/20013e3d0ad7728eb4cad4e6612fbada62761530b5387cbaf322...4686
 |  |
-|  |- 20150825=3f9b441f-1e05-48e8-9d73-90dbd9123a0a
+|  |- 20150825T1254=3f9b441f-1e05-48e8-9d73-90dbd9123a0a
 .
 .
 .
