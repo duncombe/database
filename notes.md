@@ -27,3 +27,12 @@ for a file
 
 
 
+
+citation	identifier	DOI 
+		Creator		name, orcid
+		title		title of the object
+		publisher	
+		publication year	
+		subject
+		contributor
+		
