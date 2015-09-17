@@ -1,14 +1,35 @@
 
 from lxml import etree
+import uuid
+import datetime
 
-root = etree.Element('metadata')
+# generate a UUID for this collection
+
+accdate=datetime.datetime.utcnow()
+ 
+# (tzinfo='GMT0')
+collectionID=str(uuid.uuid4())
+
+# print accdate
+
+# define the metadata schema
+root = etree.Element('Metadata')
 
 # print root.tag
 
+# 
 
-root.append( etree.Element("title") )
+root.append( etree.Element('fileIdentifier') )
 
 child1=root[0]
+
+fileID=root[0]
+fileID.append( etree.Element('CharacterString') ) 
+fileID[0].text='ocean.environment.gov.za:' + \
+	accdate.__format__('%Y%m%dT%H%M') + "=" + collectionID
+
+# print etree.tostring(child1)
+
 child2=etree.SubElement(root,'summary')
 child3=etree.SubElement(root,'keywords')
 # , 'keywords']
@@ -34,7 +55,9 @@ phone.text=phonenumber
 
 root.append(contactinfo)
 
-print etree.tostring(root, pretty_print=True)
+
+print etree.tostring(root, pretty_print=True, xml_declaration=True,
+encoding="UTF-8")
 
 # file=open("MD-file.xml","w")
 # tree=etree.XML(etree.tostring(root, pretty_print=True))
@@ -45,7 +68,7 @@ file=open("MD-file.xml","w")
 file.write(etree.tostring(root, pretty_print=True))
 file.close
 
-print "All done!\n"
+# print "All done!\n"
 
 
 # print etree.tostring(child2, pretty_print=True)

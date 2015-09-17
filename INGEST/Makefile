@@ -1,5 +1,5 @@
 
-marker: create_MD_file.py
-	touch marker
-	python create_MD_file.py
+marker: create_metadata.py
+	@touch marker
+	@python create_metadata.py
 
