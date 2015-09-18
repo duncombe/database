@@ -3,57 +3,146 @@ from lxml import etree
 import uuid
 import datetime
 
-# generate a UUID for this collection
+# TODO: look at command line arguments. 
+# take the uuid and date (accession number from the args or
+# generate them. 
 
+# clear the screen?
+
+import os
+
+def cls():
+    # os.system(['clear','cls'][os.name == 'nt'])
+    os.system('cls' if os.name=='nt' else 'clear')
+
+# now, to clear the screen
+cls()
+
+##### get this UUID from the catalog file or command line, or
+# generate it for a new collection
+#
+# to generate a UUID for this collection
+collectionID=str(uuid.uuid4()) 
+# get a time for the accession
 accdate=datetime.datetime.utcnow()
- 
-# (tzinfo='GMT0')
-collectionID=str(uuid.uuid4())
 
-# print accdate
+####
+
+# accdatestring=accdate.__format__('%Y%m%dT%H%M')  
+
+# Now we start to generate the xml tree 
 
 # define the metadata schema
 root = etree.Element('Metadata')
 
-# print root.tag
+# root.append( etree.Element('fileIdentifier') )
 
-# 
+#### begin of ingest metadata
+#
+# this is all standard, put it in a function
+# that takes collection ID and date 
 
-root.append( etree.Element('fileIdentifier') )
+Ingest = etree.Element('accession')
+AI=etree.SubElement(Ingest,'accessionDateTime')
+AI.append( etree.Element('CharacterString') ) 
+AI[0].text=accdate.isoformat()
 
-child1=root[0]
+AI=etree.SubElement(Ingest,'accessionUUID')
+AI.append( etree.Element('CharacterString') ) 
+AI[0].text=collectionID
 
-fileID=root[0]
-fileID.append( etree.Element('CharacterString') ) 
-fileID[0].text='ocean.environment.gov.za:' + \
-	accdate.__format__('%Y%m%dT%H%M') + "=" + collectionID
+AI=etree.SubElement(Ingest,'accessionIdentifier')
+AI.append( etree.Element('CharacterString') ) 
+AI[0].text='ocean.environment.gov.za:' + accdate.__format__('%Y%m%dT%H%M') \
+	+ "=" + collectionID 
 
-# print etree.tostring(child1)
+Contact=etree.SubElement(Ingest,'contact')
+Contact.append( etree.Element( 'CI_responsibleParty' ) )
+CI=Contact[0]
+a=etree.SubElement(CI,'organizationName')
+b=etree.SubElement(a,'CharacterString')
 
-child2=etree.SubElement(root,'summary')
-child3=etree.SubElement(root,'keywords')
-# , 'keywords']
+b.text='DEA/OC/OCR/OR > Oceans Research, Oceans and Coastal Research, ' \
+	+ 'Oceans and Coasts, Department of Environmental Affairs'
 
-# root.set("title","Title Text")
-child2.set("summary_text","Summary Text")
-child1.set("title_text","Title Text")
+a=etree.SubElement(CI,'positionName')
+b=etree.SubElement(a,'CharacterString')
+b.text='Data Officer'
 
-# print etree.tostring(root)
-# ['title', 'summary', 'keywords']
+a=etree.SubElement(CI,'contactInfo')
+b=etree.SubElement(a,'CI_contact')
+c=etree.SubElement(b,'phone')
+d=etree.SubElement(c,'CI_telephone')
+e=etree.SubElement(d,'voice')
+f=etree.SubElement(e,'CharacterString')
+f.text='+27-21-819-5003'
 
-name="Joseph Schmo"
-phonenumber="+27 21 555 5999"
+c=etree.SubElement(b,'address')
+d=etree.SubElement(c,'CI_address')
+e=etree.SubElement(d,'deliveryPoint')
+f=etree.SubElement(e,'CharacterString')
+f.text='East Pier'
 
-contactinfo=etree.Element("contact_info")
-contactinfo.set("contact_name",name)
-contactinfo.set("contact_phone",phonenumber)
-contactinfo.text=name
+e=etree.SubElement(d,'city')
+f=etree.SubElement(e,'CharacterString')
+f.text='Cape Town'
 
-phone=etree.SubElement(contactinfo,'phone')
-phone.set("number",phonenumber)
-phone.text=phonenumber
+e=etree.SubElement(d,'administrativeArea')
+f=etree.SubElement(e,'CharacterString')
+f.text='Western Cape'
 
-root.append(contactinfo)
+e=etree.SubElement(d,'country')
+f=etree.SubElement(e,'CharacterString') 
+f.text='South Africa'
+
+e=etree.SubElement(d,'electronicMailAddress')
+f=etree.SubElement(e,'CharacterString')
+f.text='dataofficer@ocean.environment.gov.za'
+
+a=etree.SubElement(CI,'role')
+b=etree.SubElement(a,'CI_RoleCode')
+b.set('codeList',"http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode")
+b.set('codeListValue',"custodian")
+b.text="custodian"
+
+DS=etree.SubElement(Ingest,'dateStamp')
+DS.append(etree.Element("DateTime"))
+DS[0].text=accdate.isoformat()
+
+#### end of ingest metadata
+
+
+# <gmd:metadataStandardName><gco:CharacterString>ISO 19115-2 Geographic Information - Metadata - Part 2: Extensions for Imagery and Gridded Data</gco:CharacterString></gmd:metadataStandardName>
+# <gmd:metadataStandardVersion><gco:CharacterString>ISO 19115-2:2009(E)</gco:CharacterString></gmd:metadataStandardVersion>
+
+
+# Get a title (from the user)
+
+# input title
+Metadata=dict()
+with open('ingest.data','r') as f :
+	metadata=f.read()
+
+metadict = dict(x.split(None,1) for x in metadata.splitlines())
+
+
+
+Identification = etree.Element('IndetificationInfo')
+IC = etree.SubElement(Identification,'citation')
+a=etree.SubElement(IC,'title')
+b=etree.SubElement(a,'CharacterString')
+b.text=metadict['title']
+
+a=etree.SubElement(IC,'abstract')
+b=etree.SubElement(a,'CharacterString')
+b.text=metadict['abstract']
+
+
+
+
+
+root.append( Ingest )
+root.append( Identification )
 
 
 print etree.tostring(root, pretty_print=True, xml_declaration=True,
@@ -131,4 +220,6 @@ file.close
 #             'geospatial_vertical_resolution',
 #             'geospatial_vertical_positive'
 #         ]
+# 
+# vi: se nowrap tw=0 :
 

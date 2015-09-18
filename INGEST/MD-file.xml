@@ -1,0 +1,69 @@
+<Metadata>
+  <accession>
+    <accessionDateTime>
+      <CharacterString>2015-09-18T10:49:43.745182</CharacterString>
+    </accessionDateTime>
+    <accessionUUID>
+      <CharacterString>a5c63143-a859-4428-9a25-4a73069671c4</CharacterString>
+    </accessionUUID>
+    <accessionIdentifier>
+      <CharacterString>ocean.environment.gov.za:20150918T1049=a5c63143-a859-4428-9a25-4a73069671c4</CharacterString>
+    </accessionIdentifier>
+    <contact>
+      <CI_responsibleParty>
+        <organizationName>
+          <CharacterString>DEA/OC/OCR/OR &gt; Oceans Research, Oceans and Coastal Research, Oceans and Coasts, Department of Environmental Affairs</CharacterString>
+        </organizationName>
+        <positionName>
+          <CharacterString>Data Officer</CharacterString>
+        </positionName>
+        <contactInfo>
+          <CI_contact>
+            <phone>
+              <CI_telephone>
+                <voice>
+                  <CharacterString>+27-21-819-5003</CharacterString>
+                </voice>
+              </CI_telephone>
+            </phone>
+            <address>
+              <CI_address>
+                <deliveryPoint>
+                  <CharacterString>East Pier</CharacterString>
+                </deliveryPoint>
+                <city>
+                  <CharacterString>Cape Town</CharacterString>
+                </city>
+                <administrativeArea>
+                  <CharacterString>Western Cape</CharacterString>
+                </administrativeArea>
+                <country>
+                  <CharacterString>South Africa</CharacterString>
+                </country>
+                <electronicMailAddress>
+                  <CharacterString>dataofficer@ocean.environment.gov.za</CharacterString>
+                </electronicMailAddress>
+              </CI_address>
+            </address>
+          </CI_contact>
+        </contactInfo>
+        <role>
+          <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="custodian">custodian</CI_RoleCode>
+        </role>
+      </CI_responsibleParty>
+    </contact>
+    <dateStamp>
+      <DateTime>2015-09-18T10:49:43.745182</DateTime>
+    </dateStamp>
+  </accession>
+  <IndetificationInfo>
+    <citation>
+      <title>
+        <CharacterString>This is a title for the dataset, something reasonably descriptive, with some additional information making it useful and even possibly unique.  </CharacterString>
+      </title>
+      <abstract>
+        <CharacterString>This is an abstract about the data. Some short information</CharacterString>
+      </abstract>
+    </citation>
+  </IndetificationInfo>
+</Metadata>
