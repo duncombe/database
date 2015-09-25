@@ -1,14 +1,12 @@
+#! /home/duncombe/anaconda/envs/database/bin/python
 
 from lxml import etree
 import uuid
 import datetime
 
-# TODO: look at command line arguments. 
-# take the uuid and date (accession number from the args or
-# generate them. 
+
 
 # clear the screen?
-
 import os
 
 def cls():
@@ -17,6 +15,49 @@ def cls():
 
 # now, to clear the screen
 cls()
+
+def validate_uuid(Ustr):
+# Ustr is a string purporting to be a version 4 UUID 
+    try:
+        V=uuid.UUID(Ustr,version=4)
+    except:
+        # string is not a UUID of any description
+        return False
+    # string is or is not a valid v4 UUID
+    return Ustr == str(V)
+
+#####################################################
+#####################################################
+
+# TODO: look at command line arguments. 
+# take the uuid and date (accession number from the args or
+# generate them. 
+#
+# as accession number 
+# $ command_name "accession_date=UUID"
+# 
+# from a metadata file 
+# $ command_name file
+# 
+
+import sys
+
+ARGS=sys.argv
+OPTS=ARGS
+del OPTS[0]
+
+for arg in OPTS:
+	if os.path.isfile(arg):
+		print arg, "is a file"
+	else:
+		print arg, "is not a file"
+
+	if validate_uuid(arg):
+		collectionID=uuid.UUID(arg)
+
+
+
+# file=open("MD-file.xml","w")
 
 ##### get this UUID from the catalog file or command line, or
 # generate it for a new collection
@@ -154,6 +195,7 @@ encoding="UTF-8")
 # tree.write("MD-file.xml", pretty_print=True)
 
 file=open("MD-file.xml","w")
+
 file.write(etree.tostring(root, pretty_print=True))
 file.close
 
