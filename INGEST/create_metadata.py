@@ -48,9 +48,7 @@ del OPTS[0]
 
 for arg in OPTS:
 	if os.path.isfile(arg):
-		print arg, "is a file"
-	else:
-		print arg, "is not a file"
+		metadatafile=arg
 
 	if validate_uuid(arg):
 		collectionID=uuid.UUID(arg)
