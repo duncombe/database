@@ -2,6 +2,7 @@ import os
 import getopt
 import sys
 import uuid
+from lxml import etree
 
 def validate_uuid(Ustr):
 # Ustr is a string purporting to be a version 4 UUID
@@ -27,8 +28,9 @@ def main(argv):
    inputfile = outputfile = tablefile = None
    
    try:
-      opts, args = getopt.getopt(argv,"hi:o:f:t:",
-   	["help","ifile=","ofile=","file=","table="])
+      opts, args = getopt.getopt(argv,"hi:o:f:t:u:a:d:",
+   	["help","ifile=","ofile=","file=","table=", "uuid=", "accession=", "date="])
+
    except getopt.GetoptError:
       print 'test.py -i <inputfile> -o <outputfile>'
       sys.exit(2)
@@ -45,11 +47,27 @@ def main(argv):
       elif opt in ("-f", "--file"):
          inputfile = arg
          outputfile = arg
-   
+      elif opt in ("-u", "--uuid"):
+         if validate_uuid(arg):
+            collectionID=uuid.UUID(arg)
+         else:
+            print arg, "was provided as a UUID, but is not a valid v4 UUID."
+            print "A valid v4 UUID will be generated."
+      elif opt in ("-a", "--accession"):
+         accdate=arg.split("=")[0]
+         collectionID=arg.split("=")[1]
+      elif opt in ("-d", "--date"):
+         accdate=arg
+
    
    print "Reading old metadata from:", inputfile
    print "Writing new metadata to:", outputfile
    print "Adding metadata from:", tablefile
+   print "UUID:", collectionID
+   print "date:", accdate
+
+   tree = etree.parse("MD-file.xml")
+   print etree.tostring(tree, pretty_print=True)
    
 
 
