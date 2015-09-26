@@ -30,6 +30,7 @@ def validate_uuid(Ustr):
 
 def argument_help():
 	helptext=[" ", 
+sys.argv[0]+" -h [[-i file] [-o file]] | [-f file] [-t file] [[[-u] [-d]] | -a]",
 "  	-h : help",
 "  	-i : input metadata file (XML)",
 "  	-o : output metadata file ",
@@ -37,7 +38,7 @@ def argument_help():
 "  	-t : read from a tab seperated table in the form",
 "  		Key\\tValue",
 "  		Key and Value will be added to metadata in file",
-"	-u : uuid for the colleciton",
+"	-u : uuid for the collection",
 "	-a : accession string for the collection",
 "	-d : accession date for the collection"]
 	for i in helptext:
