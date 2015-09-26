@@ -19,6 +19,7 @@ cls()
 def validate_uuid(Ustr):
 # Ustr is a string purporting to be a version 4 UUID 
     try:
+	# convert Ustr to a v4 UUID
         V=uuid.UUID(Ustr,version=4)
     except:
         # string is not a UUID of any description
@@ -42,9 +43,28 @@ def validate_uuid(Ustr):
 
 import sys
 
+# initialize
+metadatafile=None
+collectionID=None
+
+
+# create_metadata.py
+# 	-h : help
+# 	-i : input metadata file (XML)
+# 	-o : output metadata file 
+# 	-f : read and write to the same file
+# 	-t : read from a tab seperated table in the form
+# 		Key\tValue
+# 		Key and Value will be added to metadata in file
+# 
+# 
+
+
 ARGS=sys.argv
 OPTS=ARGS
 del OPTS[0]
+
+getopt.getopt(args, options[, long_options])
 
 for arg in OPTS:
 	if os.path.isfile(arg):
@@ -53,6 +73,12 @@ for arg in OPTS:
 	if validate_uuid(arg):
 		collectionID=uuid.UUID(arg)
 
+
+
+if metadatafile is None:
+	# crash or output to stdout
+else
+	# load in the input file
 
 
 # file=open("MD-file.xml","w")
