@@ -1,13 +1,13 @@
 #! /home/duncombe/anaconda/envs/database/bin/python
 
 from lxml import etree
+import getopt
 import uuid
 import datetime
-
-
+import sys
+import os
 
 # clear the screen?
-import os
 
 def cls():
     # os.system(['clear','cls'][os.name == 'nt'])
@@ -29,6 +29,38 @@ def validate_uuid(Ustr):
 
 #####################################################
 #####################################################
+
+def main(argv):
+
+   inputfile = outputfile = tablefile = None
+   
+   try:
+      opts, args = getopt.getopt(argv,"hi:o:f:t:",
+   	["help","ifile=","ofile=","file=","table="])
+   except getopt.GetoptError:
+      print 'test.py -i <inputfile> -o <outputfile>'
+      sys.exit(2)
+   for opt, arg in opts:
+      if opt in ("-h", "--help"):
+         print 'test.py -i <inputfile> -o <outputfile>'
+         sys.exit()
+      elif opt in ("-i", "--ifile"):
+         inputfile = arg
+      elif opt in ("-o", "--ofile"):
+         outputfile = arg
+      elif opt in ("-t", "--table"):
+         tablefile = arg
+      elif opt in ("-f", "--file"):
+         inputfile = arg
+         outputfile = arg
+   
+   
+   print "Reading old metadata from:", inputfile
+   print "Writing new metadata to:", outputfile
+   print "Adding metadata from:", tablefile
+   
+
+
 
 # TODO: look at command line arguments. 
 # take the uuid and date (accession number from the args or
@@ -233,6 +265,9 @@ file.close
 # 	print el.tag
 
 
+
+if __name__ == "__main__":
+   main(sys.argv[1:])
 
 ### from ioos./compliance-checker
 # 
