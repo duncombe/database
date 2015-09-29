@@ -103,9 +103,20 @@ def main(argv):
    print "UUID:", collectionID
    print "Date:", accdate
 
-   # TODO: open up tablefile and load up the elements therein
+   # open up tablefile and load up the elements therein
    # if an element already exists, replace or add to it from the 
    # table as we go along
+
+   # at present only keys are title and abstract
+
+   metadata=dict()
+   if tablefile is not None:
+   	with open(tablefile,'r') as f:
+   		metadata=f.read()
+   
+   metadict = dict(x.split(None,1) for x in metadata.splitlines())
+   
+   
 
    if inputfile is not None:
 	# load in the input file
@@ -171,7 +182,7 @@ def main(argv):
    if AI is None:
 	AI=etree.SubElement(Ingest,'accessionIdentifier')
    	AI.append( etree.Element('CharacterString') ) 
-   	AI[0].text='ocean.environment.gov.za:' + accdate.__format__('%Y%m%dT%H%M') \
+   	AI[0].text='ocean.environment.gov.za:' + IDdateformat(accdate) \
    	+ "=" + collectionID 
 
    Contact = Ingest.find('contact')
@@ -239,35 +250,45 @@ def main(argv):
    # <gmd:metadataStandardVersion><gco:CharacterString>ISO 19115-2:2009(E)</gco:CharacterString></gmd:metadataStandardVersion>
    
    
-   # Get a title (from the user)
-   
-   # input title
-   Metadata=dict()
-   with open('ingest.data','r') as f :
-   	metadata=f.read()
-   
-   metadict = dict(x.split(None,1) for x in metadata.splitlines())
-   
-   
-   
-   Identification = etree.Element('IndetificationInfo')
-   IC = etree.SubElement(Identification,'citation')
-   a=etree.SubElement(IC,'title')
-   b=etree.SubElement(a,'CharacterString')
-   b.text=metadict['title']
-   
-   a=etree.SubElement(IC,'abstract')
-   b=etree.SubElement(a,'CharacterString')
-   b.text=metadict['abstract']
-   
-   
-   
-   
-   
+   # Get a title (from the user) 
+
+  
+   Identification = root.find('IdentificationInfo')
+   if Identification is None: 
+   	Identification = etree.Element('IdentificationInfo')
+
+   IC = Identification.find('citation')
+   if IC is None:
+	IC = etree.SubElement(Identification,'citation')
+
+
+   a=IC.find('title')
+   if a is None:
+   	a=etree.SubElement(IC,'title')
+	if 'title' in metadict:
+   		b=etree.SubElement(a,'CharacterString')
+   		b.text=metadict['title']
+	else:
+		title=input("Provide a collection title: ")
+   		b=etree.SubElement(a,'CharacterString')
+   		b.text=title
+
+   a=IC.find('abstract')
+   if a is None:
+   	a=etree.SubElement(IC,'abstract')
+	if 'abstract' in metadict:
+   		b=etree.SubElement(a,'CharacterString')
+   		b.text=metadict['abstract']
+	else:
+		abstract=input("Provide a collection abstract: ")
+   		b=etree.SubElement(a,'CharacterString')
+   		b.text=abstract
+
+
    root.append( Ingest )
    root.append( Identification )
-   
-   
+
+
    print etree.tostring(root, pretty_print=True, xml_declaration=True,
    encoding="UTF-8")
    
