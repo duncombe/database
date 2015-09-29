@@ -159,7 +159,7 @@ def main(argv):
    # populate ingest information
 
 
-   ingest = root.find('accession') 
+   Ingest = root.find('accession') 
    if Ingest is None:
    	Ingest = etree.Element('accession')
 
@@ -236,7 +236,7 @@ def main(argv):
 	b.set('codeListValue',"custodian")
 	b.text="custodian"
 
-   DS = Ingest.find(dateStamp) 
+   DS = Ingest.find('dateStamp') 
    if DS is None:
 	DS=etree.SubElement(Ingest,'dateStamp')
 
