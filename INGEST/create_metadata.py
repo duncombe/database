@@ -61,7 +61,7 @@ sys.argv[0]+" -h [[-i file] [-o file]] | [-f file] [-t file] [[[-u] [-d]] | -a]"
 
 def main(argv):
 
-   root = accdate = collectionID = inputfile = outputfile = tablefile = \
+   root = accdatestr = collectionID = inputfile = outputfile = tablefile = \
 	None
    
    try:
@@ -91,17 +91,17 @@ def main(argv):
             print arg, "was provided as a UUID, but is not a valid v4 UUID."
             print "A valid v4 UUID will be generated."
       elif opt in ("-a", "--accession"):
-         accdate=arg.split("=")[0]
+         accdatestr=arg.split("=")[0]
          collectionID=arg.split("=")[1]
       elif opt in ("-d", "--date"):
-         accdate=arg
+         accdatestr=arg
       
    # regurgitate arguments
    print "Reading old metadata from:", inputfile
    print "Writing new metadata to:", outputfile
    print "Adding metadata from:", tablefile
    print "UUID:", collectionID
-   print "Date:", accdate
+   print "Date:", accdatestr
 
    # open up tablefile and load up the elements therein
    # if an element already exists, replace or add to it from the 
@@ -109,12 +109,11 @@ def main(argv):
 
    # at present only keys are title and abstract
 
-   metadata=dict()
+   metadict=dict()
    if tablefile is not None:
    	with open(tablefile,'r') as f:
    		metadata=f.read()
-   
-   metadict = dict(x.split(None,1) for x in metadata.splitlines())
+		metadict = dict(x.split(None,1) for x in metadata.splitlines())
    
    
 
@@ -124,7 +123,7 @@ def main(argv):
 	root = etree.parse(inputfile)
 	# find the uuid (collectionID) and accdate in root
 	for e in root.iterfind('*/accessionDateTime/CharacterString'):
-		accdate=e.text
+		accdatestr=e.text
 	for e in root.iterfind('*/accessionUUID/CharacterString'):
 		collectionID=e.text
 
@@ -134,8 +133,10 @@ def main(argv):
       collectionID=str(uuid.uuid4()) 
 
    # get a time for the accession
-   if accdate is None:
+   if accdatestr is None:
       accdate=datetime.datetime.utcnow()
+   else:
+      accdate=dateutil.parser.parse(accdatestr)
 
    ####
 
@@ -157,7 +158,6 @@ def main(argv):
 
    # populate ingest information
 
-   D=dateutil.parser.parse(accdate)
 
    ingest = root.find('accession') 
    if Ingest is None:

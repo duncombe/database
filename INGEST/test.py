@@ -25,7 +25,7 @@ def validate_uuid(Ustr):
 
 def main(argv):
 
-   inputfile = outputfile = tablefile = None
+   accdate = collectionID = inputfile = outputfile = tablefile = None
    
    try:
       opts, args = getopt.getopt(argv,"hi:o:f:t:u:a:d:",
@@ -67,7 +67,9 @@ def main(argv):
    print "date:", accdate
 
    tree = etree.parse("MD-file.xml")
-   print etree.tostring(tree, pretty_print=True)
+
+   # print etree.tostring(tree, pretty_print=True)
+   print etree.tostring(tree["accession"], pretty_print=True)
    
 
 
