@@ -4,8 +4,10 @@ from lxml import etree
 import getopt
 import uuid
 import datetime
+import dateutil.parser
 import sys
 import os
+import getpass
 
 # clear the screen?
 
@@ -15,6 +17,11 @@ def cls():
 
 # now, to clear the screen
 cls()
+
+################################################################
+
+def IDdateformat(DateTimeObject):
+    return DateTimeObject.__format__('%Y%m%dT%H%M')
 
 def validate_uuid(Ustr):
 # Ustr is a string purporting to be a version 4 UUID 
@@ -54,7 +61,8 @@ sys.argv[0]+" -h [[-i file] [-o file]] | [-f file] [-t file] [[[-u] [-d]] | -a]"
 
 def main(argv):
 
-   accdate = collectionID = inputfile = outputfile = tablefile = None
+   root = accdate = collectionID = inputfile = outputfile = tablefile = \
+	None
    
    try:
       opts, args = getopt.getopt(argv,"hi:o:f:t:u:a:d:",
@@ -95,12 +103,19 @@ def main(argv):
    print "UUID:", collectionID
    print "Date:", accdate
 
+   # TODO: open up tablefile and load up the elements therein
+   # if an element already exists, replace or add to it from the 
+   # table as we go along
 
    if inputfile is not None:
 	# load in the input file
 	# infile=open(inputfile,"r")
 	root = etree.parse(inputfile)
 	# find the uuid (collectionID) and accdate in root
+	for e in root.iterfind('*/accessionDateTime/CharacterString'):
+		accdate=e.text
+	for e in root.iterfind('*/accessionUUID/CharacterString'):
+		collectionID=e.text
 
    # if collectionID was not in the metadata file or on the command line
    # generate it for a new collection
@@ -111,88 +126,111 @@ def main(argv):
    if accdate is None:
       accdate=datetime.datetime.utcnow()
 
-####
+   ####
 
-# accdatestring=accdate.__format__('%Y%m%dT%H%M')  
+   # accdatestring=accdate.__format__('%Y%m%dT%H%M')  
 
-# Now we start to generate the xml tree 
 
-# define the metadata schema
-   root = etree.Element('Metadata')
+   # Now we start to generate the xml tree 
+
+   # define the metadata schema
+   if root is None:
+   	root = etree.Element('Metadata')
    
    # root.append( etree.Element('fileIdentifier') )
-   
+
    #### begin of ingest metadata
    #
    # this is all standard, put it in a function
    # that takes collection ID and date 
-   
-   Ingest = etree.Element('accession')
-   AI=etree.SubElement(Ingest,'accessionDateTime')
-   AI.append( etree.Element('CharacterString') ) 
-   AI[0].text=accdate.isoformat()
-   
-   AI=etree.SubElement(Ingest,'accessionUUID')
-   AI.append( etree.Element('CharacterString') ) 
-   AI[0].text=collectionID
-   
-   AI=etree.SubElement(Ingest,'accessionIdentifier')
-   AI.append( etree.Element('CharacterString') ) 
-   AI[0].text='ocean.environment.gov.za:' + accdate.__format__('%Y%m%dT%H%M') \
+
+   # populate ingest information
+
+   D=dateutil.parser.parse(accdate)
+
+   ingest = root.find('accession') 
+   if Ingest is None:
+   	Ingest = etree.Element('accession')
+
+   AI = Ingest.find('accessionDateTime')
+   if AI is None:
+   	AI=etree.SubElement(Ingest,'accessionDateTime')
+
+   CS = AI.find('CharacterString')
+   if CS is None:
+	AI.append( etree.Element('CharacterString') ) 
+   	AI[0].text=accdate.isoformat()
+
+   AI = Ingest.find('accessionUUID')
+   if AI is None:
+	AI=etree.SubElement(Ingest,'accessionUUID')
+	AI.append(etree.Element('CharacterString')) 
+	AI[0].text=collectionID
+
+   AI = Ingest.find('accessionIdentifier')
+   if AI is None:
+	AI=etree.SubElement(Ingest,'accessionIdentifier')
+   	AI.append( etree.Element('CharacterString') ) 
+   	AI[0].text='ocean.environment.gov.za:' + accdate.__format__('%Y%m%dT%H%M') \
    	+ "=" + collectionID 
-   
-   Contact=etree.SubElement(Ingest,'contact')
-   Contact.append( etree.Element( 'CI_responsibleParty' ) )
-   CI=Contact[0]
-   a=etree.SubElement(CI,'organizationName')
-   b=etree.SubElement(a,'CharacterString')
-   
-   b.text='DEA/OC/OCR/OR > Oceans Research, Oceans and Coastal Research, ' \
-   	+ 'Oceans and Coasts, Department of Environmental Affairs'
-   
-   a=etree.SubElement(CI,'positionName')
-   b=etree.SubElement(a,'CharacterString')
-   b.text='Data Officer'
-   
-   a=etree.SubElement(CI,'contactInfo')
-   b=etree.SubElement(a,'CI_contact')
-   c=etree.SubElement(b,'phone')
-   d=etree.SubElement(c,'CI_telephone')
-   e=etree.SubElement(d,'voice')
-   f=etree.SubElement(e,'CharacterString')
-   f.text='+27-21-819-5003'
-   
-   c=etree.SubElement(b,'address')
-   d=etree.SubElement(c,'CI_address')
-   e=etree.SubElement(d,'deliveryPoint')
-   f=etree.SubElement(e,'CharacterString')
-   f.text='East Pier'
-   
-   e=etree.SubElement(d,'city')
-   f=etree.SubElement(e,'CharacterString')
-   f.text='Cape Town'
-   
-   e=etree.SubElement(d,'administrativeArea')
-   f=etree.SubElement(e,'CharacterString')
-   f.text='Western Cape'
-   
-   e=etree.SubElement(d,'country')
-   f=etree.SubElement(e,'CharacterString') 
-   f.text='South Africa'
-   
-   e=etree.SubElement(d,'electronicMailAddress')
-   f=etree.SubElement(e,'CharacterString')
-   f.text='dataofficer@ocean.environment.gov.za'
-   
-   a=etree.SubElement(CI,'role')
-   b=etree.SubElement(a,'CI_RoleCode')
-   b.set('codeList',"http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode")
-   b.set('codeListValue',"custodian")
-   b.text="custodian"
-   
-   DS=etree.SubElement(Ingest,'dateStamp')
-   DS.append(etree.Element("DateTime"))
-   DS[0].text=accdate.isoformat()
+
+   Contact = Ingest.find('contact')
+   if Contact is None:
+	Contact=etree.SubElement(Ingest,'contact')
+	Contact.append( etree.Element( 'CI_responsibleParty' ) )
+	CI=Contact[0]
+	a=etree.SubElement(CI,'organizationName')
+	b=etree.SubElement(a,'CharacterString')
+
+	b.text='DEA/OC/OCR/OR > Oceans Research, Oceans and Coastal Research, ' \
+		+ 'Oceans and Coasts, Department of Environmental Affairs'
+
+	a=etree.SubElement(CI,'positionName')
+	b=etree.SubElement(a,'CharacterString')
+	b.text='Data Officer'
+
+	a=etree.SubElement(CI,'contactInfo')
+	b=etree.SubElement(a,'CI_contact')
+	c=etree.SubElement(b,'phone')
+	d=etree.SubElement(c,'CI_telephone')
+	e=etree.SubElement(d,'voice')
+	f=etree.SubElement(e,'CharacterString')
+	f.text='+27-21-819-5003'
+
+	c=etree.SubElement(b,'address')
+	d=etree.SubElement(c,'CI_address')
+	e=etree.SubElement(d,'deliveryPoint')
+	f=etree.SubElement(e,'CharacterString')
+	f.text='East Pier'
+	
+	e=etree.SubElement(d,'city')
+	f=etree.SubElement(e,'CharacterString')
+	f.text='Cape Town'
+	
+	e=etree.SubElement(d,'administrativeArea')
+	f=etree.SubElement(e,'CharacterString')
+	f.text='Western Cape'
+	
+	e=etree.SubElement(d,'country')
+	f=etree.SubElement(e,'CharacterString') 
+	f.text='South Africa'
+	
+	e=etree.SubElement(d,'electronicMailAddress')
+	f=etree.SubElement(e,'CharacterString')
+	f.text='dataofficer@ocean.environment.gov.za'
+	
+	a=etree.SubElement(CI,'role')
+	b=etree.SubElement(a,'CI_RoleCode')
+	b.set('codeList',"http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode")
+	b.set('codeListValue',"custodian")
+	b.text="custodian"
+
+   DS = Ingest.find(dateStamp) 
+   if DS is None:
+	DS=etree.SubElement(Ingest,'dateStamp')
+
+   DS.append(etree.Element("DateTime",modified_by=getpass.getuser()))
+   DS[-1].text=datetime.datetime.utcnow().isoformat()
    
    #### end of ingest metadata
    
