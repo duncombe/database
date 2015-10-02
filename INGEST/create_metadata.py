@@ -9,6 +9,8 @@ import sys
 import os
 import getpass
 
+########################################
+
 # clear the screen?
 
 def cls():
@@ -23,6 +25,8 @@ cls()
 def IDdateformat(DateTimeObject):
     return DateTimeObject.__format__('%Y%m%dT%H%M')
 
+########################################
+
 def validate_uuid(Ustr):
 # Ustr is a string purporting to be a version 4 UUID 
     try:
@@ -33,6 +37,8 @@ def validate_uuid(Ustr):
         return False
     # string is or is not a valid v4 UUID
     return Ustr == str(V)
+
+########################################
 
 def citation_Entry(metadict,IC,subelement_name):
    a=IC.find(subelement_name)
@@ -53,6 +59,7 @@ def citation_Entry(metadict,IC,subelement_name):
 			sys.stderr.write("To change the "+subelement_name+", edit the document directly.\n")
 			sys.stderr.flush()
 
+########################################
 
 def argument_help():
 	helptext=[" ", 
@@ -285,44 +292,12 @@ def main(argv):
    citation_Entry(metadict,IC,'abstract')
    citation_Entry(metadict,IC,'author')
 
-#    a=IC.find('abstract')
-#    if a is None:
-#    	a=etree.SubElement(IC,'abstract')
-# 	if 'abstract' in metadict:
-#    		b=etree.SubElement(a,'CharacterString')
-#    		b.text=metadict['abstract']
-# 	else:
-# 		abstract=input("Provide a collection abstract: ")
-#    		b=etree.SubElement(a,'CharacterString')
-#    		b.text=abstract
-#    elif 'abstract' in metadict:
-# 	# sys.stderr.write("Found abstract\n")
-# 	# sys.stderr.flush()
-# 	# print etree.tostring(a,pretty_print=True)
-# 	
-# 	for B in a.iterfind('CharacterString'):
-# 		sys.stderr.flush() 
-# 		if metadict['abstract'] != B.text:
-# 			sys.stderr.write("Warning: You have provided a new abstract.\n")
-# 			sys.stderr.write("The metadata document already contains an abstract.\n" )
-# 			sys.stderr.write("To change the abstract, edit the document directly.\n")
-# 			sys.stderr.flush()
-
-
-
    root.append( Ingest )
    root.append( Identification )
 
 
    print etree.tostring(root, pretty_print=True, xml_declaration=True,
    	encoding="UTF-8")
-   
-   # file=open("MD-file.xml","w")
-   # tree=etree.XML(etree.tostring(root, pretty_print=True))
-   # tree=etree.XML(etree.tostring(root))
-   # tree.write("MD-file.xml", pretty_print=True)
-   
-   # file=open("MD-file.xml","w")
 
    # now we close up the input file and open up the output file to write 
    if os.path.isfile(outputfile):
@@ -333,20 +308,12 @@ def main(argv):
    file.write(etree.tostring(root, pretty_print=True, xml_declaration=True))
    file.close
 
-   # print "All done!\n"
-
-
-   # print etree.tostring(child2, pretty_print=True)
-
-   # children=list(root)
-   # for el in children:
-   # 	print el.tag
-   
-   
+########################################
 
 if __name__ == "__main__":
    main(sys.argv[1:])
 
+########################################
 ### from ioos./compliance-checker
 # 
 #     def check_high(self, ds):
