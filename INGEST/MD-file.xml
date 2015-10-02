@@ -1,4 +1,5 @@
-﻿<Metadata>
+<?xml version='1.0' encoding='ASCII'?>
+<Metadata>
   <accession>
     <accessionDateTime>
       <CharacterString>2015-09-18T10:49:43.745182</CharacterString>
@@ -54,6 +55,8 @@
     </contact>
     <dateStamp>
       <DateTime>2015-09-18T10:49:43.745182</DateTime>
+      <DateTime modified_by="duncombe">2015-10-02T10:43:17.141327</DateTime>
+      <DateTime modified_by="duncombe">2015-10-02T15:00:23.084029</DateTime>
     </dateStamp>
   </accession>
   <IdentificationInfo>
@@ -64,6 +67,15 @@
       <oldabstract>
         <CharacterString>This is an abstract about the data. Some short information</CharacterString>
       </oldabstract>
+      <title>
+        <CharacterString>This is a Title for the dataset, something reasonably descriptive, with some additional information making it useful and even possibly unique.  </CharacterString>
+      </title>
+      <abstract>
+        <CharacterString>This is an abstract about the data. It could be some short information about where, when, why, who, how in a pleasant readable form. Unfortunately for this file it must not have paragraphs or new lines, unless we can code that in with some \n exciting \n escape \n codes. \n  </CharacterString>
+      </abstract>
+      <author>
+        <CharacterString>Abcdefghijk, Qwerty Uiop</CharacterString>
+      </author>
     </citation>
   </IdentificationInfo>
 </Metadata>

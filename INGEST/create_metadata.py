@@ -139,7 +139,8 @@ def main(argv):
    if inputfile is not None:
 	# load in the input file
 	# infile=open(inputfile,"r")
-	root = etree.parse(inputfile).getroot()
+	parser = etree.XMLParser(remove_blank_text=True)
+	root = etree.parse(inputfile, parser).getroot()
 	# find the uuid (collectionID) and accdate in root
 	for e in root.iterfind('.//accessionDateTime/CharacterString'):
 		accdatestr=e.text
