@@ -58,12 +58,12 @@
   </accession>
   <IdentificationInfo>
     <citation>
-      <title>
+      <oldtitle>
         <CharacterString>This is a title for the dataset, something reasonably descriptive, with some additional information making it useful and even possibly unique.  </CharacterString>
-      </title>
-      <abstract>
+      </oldtitle>
+      <oldabstract>
         <CharacterString>This is an abstract about the data. Some short information</CharacterString>
-      </abstract>
+      </oldabstract>
     </citation>
   </IdentificationInfo>
 </Metadata>
