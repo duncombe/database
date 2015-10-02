@@ -1,3 +1,2 @@
-title	This is a title for the dataset, something reasonably descriptive, with some additional information making it useful and even possibly unique.  
-abstract	This is an abstract about the data. Some short information
-about where when why who how in a pleasant readable form.  
+title	This is a Title for the dataset, something reasonably descriptive, with some additional information making it useful and even possibly unique.  
+abstract	This is an abstract about the data. It could be some short information about where, when, why, who, how in a pleasant readable form. Unfortunately for this file it must not have paragraphs or new lines, unless we can code that in with some \n exciting \n escape \n codes. \n  

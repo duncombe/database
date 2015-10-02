@@ -69,7 +69,7 @@ def main(argv):
    	["help","ifile=","ofile=","file=","table=","uuid=",
             "accession=", "date="])
    except getopt.GetoptError:
-      print 'test.py -i <inputfile> -o <outputfile>'
+      argument_help()
       sys.exit(2)
    for opt, arg in opts:
       if opt in ("-h", "--help"):
@@ -120,11 +120,11 @@ def main(argv):
    if inputfile is not None:
 	# load in the input file
 	# infile=open(inputfile,"r")
-	root = etree.parse(inputfile)
+	root = etree.parse(inputfile).getroot()
 	# find the uuid (collectionID) and accdate in root
-	for e in root.iterfind('*/accessionDateTime/CharacterString'):
+	for e in root.iterfind('.//accessionDateTime/CharacterString'):
 		accdatestr=e.text
-	for e in root.iterfind('*/accessionUUID/CharacterString'):
+	for e in root.iterfind('.//accessionUUID/CharacterString'):
 		collectionID=e.text
 
    # if collectionID was not in the metadata file or on the command line
@@ -272,6 +272,13 @@ def main(argv):
 		title=input("Provide a collection title: ")
    		b=etree.SubElement(a,'CharacterString')
    		b.text=title
+   elif 'title' in metadict:
+	for B in a.iterfind('CharacterString'):
+		if metadict['title'] is not B.text:
+			sys.stderr.write("Warning: You have provided a new title.\n")
+			sys.stderr.write("The metadata document already contains a title.\n")
+			sys.stderr.write("To change the title, edit the document directly.\n")
+			sys.stderr.flush()
 
    a=IC.find('abstract')
    if a is None:
@@ -283,6 +290,19 @@ def main(argv):
 		abstract=input("Provide a collection abstract: ")
    		b=etree.SubElement(a,'CharacterString')
    		b.text=abstract
+   elif 'abstract' in metadict:
+	# sys.stderr.write("Found abstract\n")
+	# sys.stderr.flush()
+	# print etree.tostring(a,pretty_print=True)
+	
+	for B in a.iterfind('CharacterString'):
+		sys.stderr.flush() 
+		if metadict['abstract'] != B.text:
+			sys.stderr.write("Warning: You have provided a new abstract.\n")
+			sys.stderr.write("The metadata document already contains an abstract.\n" )
+			sys.stderr.write("To change the abstract, edit the document directly.\n")
+			sys.stderr.flush()
+			
 
 
    root.append( Ingest )
@@ -300,7 +320,7 @@ def main(argv):
    # file=open("MD-file.xml","w")
    file=open("testfile.xml","w")
    
-   file.write(etree.tostring(root, pretty_print=True))
+   file.write(etree.tostring(root, pretty_print=True, xml_declaration=True))
    file.close
    
    # print "All done!\n"
