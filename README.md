@@ -37,6 +37,10 @@ would be stored as
 1. Publication database is constructed by making symlinks to `$DATABASE`.
 1. Metadata database includes xlinks to `$DATABASE`. 
 
+## Instructions
+
+See instructions in INGEST/ directory
+
 ## Database Structure
 
 The database structure is proposed to look like this:
