@@ -4,7 +4,9 @@
 # to 256 files in them):
 # This command will count the files in directories:
 
-find $@ -type d -print -exec sh -c "ls -1 {} | wc -l " \; | paste - - 
+# find $@ -type d -print -exec sh -c "ls -1 {} | wc -l " \; | paste - - 
+
+find $@ -type d -exec sh -c "ls -1 {} | wc -l " \; -print | paste - - 
 
 # For those directories where number of files is > 256, split again the
 # checksum and fan out into another layer of folders.
