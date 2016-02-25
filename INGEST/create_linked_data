@@ -67,7 +67,5 @@ cat $CATALOG |
 			}
 		}' 
 
-
-
 # vi: se nowrap tw=0 :
 
