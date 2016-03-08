@@ -10,6 +10,8 @@
 # 
 
 # ensure we have set all these environment variables in the calling script
+amsacc=${AMSACC:?}
+parent=${PARENT:?}
 accession=${ACCESSION:?}
 collection=${COLLECTION:?}
 catalog=${CATALOG:?}
@@ -23,7 +25,7 @@ fi
 # ensure that database has no trailing /
 database="${database%/}"
 
-MANIFESTFORM="# SHASUM \t FILEUUID \t ACCESSION_DATE \t COLLECTION_UUID \t filenamepath "
+MANIFESTFORM="# SHASUM \t FILEUUID \t ACCESSION_DATE \t COLLECTION_UUID \t PARENT_UUID \t filenamepath "
 
 if [ ! -f ${catalog} ]; then 
 	{
@@ -71,10 +73,11 @@ if ( ! grep -v "^#" $catalog | grep "$filepath" > /dev/null ) ; then
 	uuid=`uuidgen -r`
 ## THIS LINE MUST CORRESPOND WITH THE COMMENT WHEN THE DATABASE WAS CREATED
 ## MANIFESTFORM
-	echo -e "${chksum}\t${uuid}\t${accession}\t${collection}\t${filepath}" >> ${catalog}
+	echo -e "${chksum}\t${uuid}\t${accession}\t${collection}\t${parent}\t${filepath}" >> ${catalog}
 else
  	echo \""$srcfile"\" already in database 1>&2
 	# echo "$filepath" 1>&2
 fi
 
+# vim: se nowrap tw=0 :
 
