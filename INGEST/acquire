@@ -10,7 +10,7 @@ export CATALOG=${CATALOG:-"/DATA/LOCALWEB/DATA/manifest.txt"}
 export DATABASE=${DATABASE:-"/DATA/LOCALWEB/DATA/.DATABASE"}
 export LOGFILE=${LOGFILE:-"/DATA/LOCALWEB/DATA/ingest.log"}
 
-# the accession refgerence and directory structure are defined by
+# the accession reference and directory structure are defined by
 # ACCESSION_DIR 
 export ACCESSION_DIR=${ACCESSION_DIR:-"/DATA/LOCALWEB/DATA/ACCESSION"}
 

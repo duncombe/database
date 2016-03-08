@@ -37,9 +37,10 @@ SRCDIR="${SRCDIR%/}/"
 
 
 # generate a collection UUID and an accession identifier
-# export ACCESSION=`date +"%Y%m%d%H%M%S"`
+# export ACCESSION_DATE=`date +"%Y%m%d%H%M%S"`
 export COLLECTION=`uuidgen`
-export ACCESSION=`date -u +"%Y%m%dT%H%M"`
+# MIMS ACCESSION_DATE here is a date-time string
+export ACCESSION_DATE=`date -u +"%Y%m%dT%H%M"`
 
 # if the submission has a PARENT use that identifier
 # otherwise the submission is the parent and the identifiers are the same
@@ -50,7 +51,7 @@ export PARENT=${PARENT:-$COLLECTION}
 # echo $DATABASE
 # echo $SRCDIR
 
-# echo $ACCESSION
+# echo $ACCESSION_DATE
 # echo $AMSACC
 # echo $COLLECTION
 # echo $PARENT
