@@ -2,11 +2,13 @@
 # test catalog for various out of order conditions
 
 awk '	BEGIN{FS="	"}
+	# skip comments
 	/^#/{next}
+	# test if any fileUUID is a duplicate 
 	{ if ($2 in UUID){print "Duplicate UUID!"} else {UUID[$2]++}
 	  # if ($1 in SHASUM){print "Duplicate SHASUM"}
 	  SHASUM[$1]++
-	FILE[$1,$2]=$NF
+	  FILE[$1,$2]=$NF
 	# FILE[$1,$2]=substr($0,137)
 	}
 	END{ for (var in FILE){

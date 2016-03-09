@@ -13,11 +13,13 @@ export LINKDIR=${1:?}
 LINKDIR=${LINKDIR%/}/
 DATABASE=${DATABASE%/}
 
+ACCID=${2:-.}
+
 function relpath() { 
   python -c "import os,sys;print(os.path.relpath(*(sys.argv[1:])))" "$@";
 }
 
-cat $CATALOG |
+cat $CATALOG | grep "$ACCID" | 
 	# tail -n 10 |
 	awk -v DB=${DATABASE} -v SD=${LINKDIR} -v RRD=$(relpath $DATABASE $LINKDIR) '
 		BEGIN{FS="\t"}

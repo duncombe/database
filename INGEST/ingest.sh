@@ -22,7 +22,6 @@ export SOURCE_DIR="${1:?}"
 
 if [ -w ${LOGFILE} ] ; then 
 
-
 	${INGEST_HOME}/make_catalog "${SOURCE_DIR}" | tee -a ${LOGFILE}
 
 	${INGEST_HOME}/create_linked_data ${ACCESSION_DIR}  | tee -a ${LOGFILE}

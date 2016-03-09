@@ -56,14 +56,17 @@ filepath=`echo $(basename "$srcdir")/"${srcfile#$srcdir}"`
 # check if the file exists in the database
 # if not, copy it in
 if [ ! -f $database/$dir/$file ]; then 
-	mkdir -p $database/$dir
-	cp -i "$@" $database/$dir/$file
+	mkdir -pv $database/$dir
+	cp -iv "$@" $database/$dir/$file
  	echo Copying in "$srcfile" 1>&2
+else
+ 	echo "$srcfile" already exists as $dir/$file
 fi
 
 # Test if the catalog exists, 
 if [ ! -f $catalog ]; then
 	touch $catalog
+ 	echo Forced to create $catalog 
  	echo Forced to create $catalog 1>&2
 fi
 
@@ -73,7 +76,7 @@ if ( ! grep -v "^#" $catalog | grep "$filepath" > /dev/null ) ; then
 	uuid=`uuidgen -r`
 ## THIS LINE MUST CORRESPOND WITH THE COMMENT WHEN THE DATABASE WAS CREATED
 ## MANIFESTFORM
-	echo -e "${chksum}\t${uuid}\t${accession_date}\t${collection}\t${parent}\t${filepath}" >> ${catalog}
+	echo -e "${chksum}\t${uuid}\t${accession_date}\t${collection}\t${parent}\t${amsacc}\t${filepath}" >> ${catalog}
 else
  	echo \""$srcfile"\" already in database 1>&2
 	# echo "$filepath" 1>&2

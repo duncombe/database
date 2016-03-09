@@ -11,9 +11,7 @@
 # write the new number to the file
 # free the lock
 
-
 AMSACCFILE=${AMSACCFILE:-/DATA/amsaccession}
-
 if [ ! -e $AMSACCFILE ]; then touch $AMSACCFILE; fi
 
 export AMSACC=$( TMPFILE=`mktemp`
@@ -45,6 +43,17 @@ export ACCESSION_DATE=`date -u +"%Y%m%dT%H%M"`
 # if the submission has a PARENT use that identifier
 # otherwise the submission is the parent and the identifiers are the same
 export PARENT=${PARENT:-$COLLECTION}
+
+# write what we are doing (goes to the logfile)
+
+echo "AMSACC         = ${AMSACC}"
+echo "INGEST_HOME    = ${INGEST_HOME}"
+echo "SRCDIR         = ${SRCDIR}"
+echo "CATALOG        = ${CATALOG}"
+echo "DATABASE       = ${DATABASE}"
+echo "COLLECTION     = ${COLLECTION}"
+echo "ACCESSION_DATE = ${ACCESSION_DATE}"
+echo "PARENT         = ${PARENT}"
 
 # echo $SRCDIR
 # echo $CATALOG
