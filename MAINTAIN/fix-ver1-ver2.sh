@@ -1,8 +1,12 @@
+#! /bin/bash
 
 export VERSION_CONTROL=numbered 
 
 # converts manifest file from n column data to n+2 column data
 # adding a parent accession number and an AMS accession number 
+
+# export AMSACCFILE=${AMSACCFILE:-/DATA/amsaccession}
+export AMSACCFILE=${AMSACCFILE:?AMSACCFILE is not set. Set environment variables before running $0}
 
 MANIFESTFILE=${1:?}
 
@@ -12,7 +16,7 @@ if [ $(grep "^#.*SHASUM" ${MANIFESTFILE} | awk 'END{print NF}') = 14 ]; then
 	exit 1
 fi
 
-export AMSACCFILE=${AMSACCFILE:-/DATA/amsaccession}
+BINDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 TEMPFILE=`mktemp`
 
@@ -34,12 +38,12 @@ TEMPFILE=`mktemp`
 
 # AMSACC=`getacc`
 
-# awk -v AMSACC=$AMSACC 
-awk 'BEGIN{FS="\t"; OFS="\t"; collid=""}
+awk -v BINDIR=$BINDIR	\
+	'BEGIN{FS="\t"; OFS="\t"; collid=""}
 	/^#/{print} 
 	/^# SHASUM/{print "# SHASUM \\t FILEUUID \\t ACCESSION_DATE \\t COLLECTION_UUID \\t PARENT_UUID \\t AMSACC \\t filenamepath "}
 	!/^#/{  if (collid != $4){ 
-			command="./getacc"
+			command=BINDIR "/getacc"
 			command | getline AMSACC 
 			close(command)
 		}
