@@ -1,13 +1,36 @@
 
+export VERSION_CONTROL=numbered 
 
-export VERSION_CONTROL=t
-
-# converts manifest file from n column data to n+1 column data
-# adds a parent and AMS acc 
+# converts manifest file from n column data to n+2 column data
+# adding a parent accession number and an AMS accession number 
 
 MANIFESTFILE=${1:?}
+
+# check that this is a valid file to work on 
+if [ $(grep "^#.*SHASUM" ${MANIFESTFILE} | awk 'END{print NF}') = 14 ]; then
+	echo $MANIFESTFILE has already been processed. Cannot reprocess.
+	exit 1
+fi
+
 export AMSACCFILE=${AMSACCFILE:-/DATA/amsaccession}
+
 TEMPFILE=`mktemp`
+
+# GETACCSCRIPT=`mktemp`
+# cat << ENDIN > $GETACCSCRIPT
+# #! /bin/bash
+# AMSACCFILE=${AMSACCFILE:-/DATA/amsaccession}
+# if [ ! -e $AMSACCFILE ]; then
+# 	touch $AMSACCFILE
+# fi 
+# TMPFILE=$(mktemp)
+#        ( flock 9
+#          echo $(($(cat $AMSACCFILE)+1)) > $TMPFILE
+#          cat $TMPFILE > $AMSACCFILE
+#        ) 9< /var/lock/amsaccession.lock
+#        cat $TMPFILE 
+#        rm -f ${TMPFILE}
+# ENDIN 
 
 # AMSACC=`getacc`
 
@@ -26,11 +49,9 @@ awk 'BEGIN{FS="\t"; OFS="\t"; collid=""}
 		for(i=5;i<=NF;i++){printf "\t%s",$i}; printf "\n"
 		collid=$4
 		}
-	'  $MANIFESTFILE 
+	'  $MANIFESTFILE > $TEMPFILE
 
-# > $TEMPFILE
-
-# mv -fb $TEMPFILE $MANIFESTFILE
+mv -fb $TEMPFILE $MANIFESTFILE
 
 # vi: se tw=0 :
 
