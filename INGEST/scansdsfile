@@ -1,0 +1,21 @@
+
+
+awk -f mathlib.awk --source '
+	BEGIN{FS=","}
+	/LATITUDE/{next}
+	{gsub("\"","") 
+	 print parsepos(gensub(/../,"&:",1,$4) $5), parsepos(gensub(/.../,"&:",1,$6) $7)}
+	' ${1:?} | awk '
+	BEGIN{mix=90000000; max=-9000000; miy=9000000; may=-9000000}
+	$1==0 && $2==0{next}
+	{miy=$1<miy?$1:miy
+	 may=$1>may?$1:may
+	 mix=$2<mix?$2:mix
+	 max=$2>max?$2:max
+	}
+	END{print mix,max,miy,may}'
+
+
+
+# vi:se tw=0 wrap :
+
