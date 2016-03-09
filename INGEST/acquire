@@ -3,7 +3,7 @@
 # defines the environmental variables that configure the ingest script 
 
 # processing scripts are defined by INGEST_HOME
-export INGEST_HOME=${INGEST_HOME:?INGEST_HOME defines where the scripts}
+export INGEST_HOME=${INGEST_HOME:?INGEST_HOME defines directory holding processing scripts}
 
 # dumping data into the database described by DATABASE, CATALOG, and
 # LOGFILE
