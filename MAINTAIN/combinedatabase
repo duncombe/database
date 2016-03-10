@@ -1,0 +1,7 @@
+#!/bin/bash
+#
+# combine two databses. copy the first into the second. 
+
+echo Usage: $0 <from> <to> 
+
+
