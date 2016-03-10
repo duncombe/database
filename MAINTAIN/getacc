@@ -1,17 +1,21 @@
 #! /bin/bash
 
+# gets a newaccession number and writes it back to the file
+
 # getacc(){ 
 
 AMSACCFILE=${AMSACCFILE:-/DATA/amsaccession}
 if [ ! -e $AMSACCFILE ]; then touch $AMSACCFILE; fi
 
-	TMPFILE=`mktemp`
-        ( flock 9
-          echo $(($(cat $AMSACCFILE)+1)) > $TMPFILE
-          cat $TMPFILE > $AMSACCFILE
-        ) 9< /var/lock/amsaccession.lock
-        cat $TMPFILE 
-        rm -f $TMPFILE
+TMPFILE=`mktemp`
+(	flock 9
+        # echo $(($(cat $AMSACCFILE)+1)) > $TMPFILE
+        cat $AMSACCFILE | awk '{printf "%07d\n",$1+1}' > $TMPFILE
+        cat $TMPFILE > $AMSACCFILE
+	) 9< /var/lock/amsaccession.lock
+
+cat $TMPFILE 
+rm -f $TMPFILE
 
 #       }
 
