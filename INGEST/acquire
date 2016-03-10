@@ -15,10 +15,18 @@ export LOGFILE=${LOGFILE:?LOGFILE: the log file, e.g., "/DATA/LOCALWEB/DATA/inge
 # ACCESSION_DIR 
 export ACCESSION_DIR=${ACCESSION_DIR:?The accession reference and directory structure, e.g., "/DATA/LOCALWEB/DATA/ACCESSION"}
 
+export AMSACCFILE="${AMSACCFILE:?Get the next AMS accession number from this file (/DATA/amsaccession)}"
+
 # the source directory is defined by SOURCE_DIR
 export SOURCE_DIR="${1:?Provide the source directory as the first argument }"
 
-export AMSACCFILE="${1:?AMSACCFILE:?Get the next AMS accession number from this file}"
+echo INGEST_HOME=${INGEST_HOME}
+echo CATALOG=${CATALOG}
+echo DATABASE=${DATABASE}
+echo LOGFILE=${LOGFILE}
+echo ACCESSION_DIR=${ACCESSION_DIR}
+echo AMSACCFILE=${AMSACCFILE}
+echo SOURCE_DIR=${SOURCE_DIR}
 
 read -p "Environmental variables are loaded. Complete the ingest (y) or stop (N)? " RESP
 RESP=${RESP^^} 
