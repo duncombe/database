@@ -46,8 +46,11 @@ chksum=`cat "$srcfile" | shasum -a 384 | cut -f1 -d\ `
 # we are going to store it
 # dir=`echo $chksum |  sed -n 's=^\(..\)\(..\)\(..\).*$=\1/\2/\3=p'`
 # file=`echo $chksum | cut -b7- `
-dir=`echo $chksum |  sed -n 's=^\(..\).*$=\1=p'`
-file=`echo $chksum | cut -b3- `
+# dir=`echo $chksum |  sed -n 's=^\(..\).*$=\1=p'`
+# dir=`echo $chksum |  cut -b-2 `
+# file=`echo $chksum | cut -b3- `
+dir=${chksum:0:2}
+file=${chksum:2}
 
 # Make a note of the original filepath 
 

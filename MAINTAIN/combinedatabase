@@ -1,7 +1,50 @@
 #!/bin/bash
 #
-# combine two databses. copy the first into the second. 
+# combine two databases. copy the first into the second. 
 
-echo Usage: $0 <from> <to> 
+# echo Usage: $0 <from> <to> 
 
+export fromCATALOG=~/WORK/DEA/database/INGEST/tmp1/manifest.txt
+export fromDATABASE=~/WORK/DEA/database/INGEST/tmp1/.DATABASE
+export fromACCESSION_DIR=~/WORK/DEA/database/INGEST/tmp1/ACCESSION
 
+export toCATALOG=~/WORK/DEA/database/INGEST/tmp/manifest.txt
+export toDATABASE=~/WORK/DEA/database/INGEST/tmp/.DATABASE
+export toACCESSION_DIR=~/WORK/DEA/database/INGEST/tmp/ACCESSION
+
+# read from the catalog (manifest.txt file) the accessions that we want to move
+# copy the shasum files from the fromDATABASE (.DATABASE) to the toDATABASE
+# write the catalog entry to the toCATALOG
+head -n20 ${fromCATALOG} | awk -v TO=$toDATABASE -v FROM=$fromDATABASE -v CATALOG=$toCATALOG --source '
+	/^#/{next}
+	{ dir=substr($1,1,2)
+	  file=substr($1,3)
+	  todir= TO "/" dir
+	  cmd="test -d " todir
+	  if(system(cmd)==1){
+		cmd2="mkdir " todir
+		system(cmd2)
+		close(cmd2)
+		}
+	  close(cmd)
+	  cmd="test -e " todir "/" file
+	  if(system(cmd)==1){
+		cmd2="cp -v " FROM "/" dir "/" file " " todir
+		system(cmd2)
+		close(cmd2)
+		}
+	  else {print todir "/" file " already exists"} 
+	  }
+	{ print >> CATALOG } 
+	' 
+
+# use create_linked_data to recreate the accessions in ACCESSION
+
+export CATALOG=$toCATALOG
+export DATABASE=$toDATABASE
+
+../INGEST/create_linked_data ${toACCESSION_DIR}
+
+#
+# vi: se tw=0 :
+# 

@@ -41,14 +41,18 @@ cat $CATALOG | grep "$ACCID" |
 		# determine the accession number from the datetime and UUID 
 		acc=$3 "=" $4
 
-		cmd="mkdir -pv \"" SD "/" acc "/" path "\""
-		N=split(path,a,"/")+1
-		RD=RRD
-		for (i=1;i<=N;i++){RD="../" RD}
+		cmd2="test -d \"" SD "/" acc "/" path "\""
+		if (system(cmd2)==1){
+			cmd="mkdir -pv \"" SD "/" acc "/" path "\""
+			N=split(path,a,"/")+1
+			RD=RRD
+			for (i=1;i<=N;i++){RD="../" RD}
 
-		# print cmd
-		# print rawfile
-		system(cmd) ; close(cmd)
+			# print cmd
+			# print rawfile
+			system(cmd) ; close(cmd)
+		}
+		close(cmd2)
 
 		if (length(file)!=0 && length(rawfile)!=0){
 			testcmd="test -L \"" SD "/" acc "/" rawfile "\""
