@@ -14,6 +14,11 @@
 AMSACCFILE=${AMSACCFILE:-/DATA/amsaccession}
 if [ ! -e $AMSACCFILE ]; then touch $AMSACCFILE; fi
 
+if [ ! -e /var/lock/amsaccession.lock ]; then
+	echo Cannot get lockfile
+	exit 2
+fi
+
 export AMSACC=$( TMPFILE=`mktemp`
 		    ( flock 9
                       # echo $(($(cat $AMSACCFILE)+1)) > $TMPFILE
@@ -22,7 +27,7 @@ export AMSACC=$( TMPFILE=`mktemp`
                     ) 9< /var/lock/amsaccession.lock
 		cat $TMPFILE 
 		rm -f $TMPFILE
-		)
+		) 
 
 export INGEST_HOME=${INGEST_HOME:-$(pwd)}
 

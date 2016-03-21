@@ -3,10 +3,17 @@
 DATABASE=${1:-database}
 TEMPSUM=`mktemp`
 
+# filenames in the database are based on the checksum. 
+# Create a checksum file from the filenames and check them.
 find $DATABASE -type f -printf "%P \n" -print |
 	paste -d " "  - - | sed "s/\///" > $TEMPSUM
+
 shasum -c $TEMPSUM 
 rm $TEMPSUM
+
+# should also want to check the catalog that all links are there
+#
+# and check the database that all the files have an entry in the catalog
 
 # will want to check the database for full directories (directories with close
 # to 256 files in them):
