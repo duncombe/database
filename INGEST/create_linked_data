@@ -13,12 +13,16 @@ export LINKDIR=${1:?}
 LINKDIR=${LINKDIR%/}/
 DATABASE=${DATABASE%/}
 
+# optional second argument is a grep pattern defining the catalog entries we
+# are linking. Default is to link everything. 
 ACCID=${2:-.}
 
 function relpath() { 
   python -c "import os,sys;print(os.path.relpath(*(sys.argv[1:])))" "$@";
 }
 
+# include the option to only link some of the entries (because we are modifying
+# an existing database where links for most entries in the catalog are already made. 
 cat $CATALOG | grep "$ACCID" | 
 	# tail -n 10 |
 	awk -v DB=${DATABASE} -v SD=${LINKDIR} -v RRD=$(relpath $DATABASE $LINKDIR) '
@@ -38,7 +42,7 @@ cat $CATALOG | grep "$ACCID" |
 
 		cmd | getline path ;  close(cmd)
 
-		# determine the accession number from the datetime and UUID 
+		# create the accession number from the datetime and UUID 
 		acc=$3 "=" $4
 
 		cmd2="test -d \"" SD "/" acc "/" path "\""
@@ -55,18 +59,20 @@ cat $CATALOG | grep "$ACCID" |
 		close(cmd2)
 
 		if (length(file)!=0 && length(rawfile)!=0){
-			testcmd="test -L \"" SD "/" acc "/" rawfile "\""
-			# beware: sense of system is opposite to what you might expect. returns 0 (in gawk false) if the 
+			isnotalink="test -L \"" SD "/" acc "/" rawfile "\""
+			# beware: sense of system is opposite to what you might
+			# expect. returns 0 (in gawk false) if the 
 			# file is a link, 1 (in gawk true) if it is not. 
-			if (system(testcmd)){
-				# print testcmd
+			# So if the link does not exist, create it.
+			if (system(isnotalink)){
+				# print isnotalink
 				#    ln  -sf  (   linkpointer         ) (                          )
 				#   -----------    ---     ---      -------    ---     ---        ---- 
 				cmd="ln -sf \"" RD "/" dir "/" file "\" \"" SD "/" acc "/" rawfile "\""
 				# print cmd
 				system(cmd) ; close(cmd)
 				}
-			close(testcmd)
+			close(isnotalink)
 			}
 		else{
 			print "Bad catalog entry: " FNR " (" NR ")" > "/dev/stderr"

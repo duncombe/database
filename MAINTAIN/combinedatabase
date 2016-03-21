@@ -43,8 +43,16 @@ head -n20 ${fromCATALOG} | awk -v TO=$toDATABASE -v FROM=$fromDATABASE -v CATALO
 export CATALOG=$toCATALOG
 export DATABASE=$toDATABASE
 
-../INGEST/create_linked_data ${toACCESSION_DIR}
+# we may end up combining large data catalogs. We DO NOT want to be checking 
+# existing links for the entire new catalog. Instead grep only for identifiers 
+# that are in the incoming catalog. 
+
+# Column 4 are collection UUIDs 
+for COLL in `grep -v "^#" $fromCATALOG  | cut -d\       -f4 | uniq`; do 
+	../INGEST/create_linked_data ${toACCESSION_DIR} ${COLL}
+done
 
 #
 # vi: se tw=0 :
 # 
+
