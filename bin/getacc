@@ -1,6 +1,8 @@
 #! /bin/bash
 
 # gets a newaccession number and writes it back to the file
+# each accesssion number has a collection UUID
+# generate it here
 
 # getacc(){ 
 
@@ -10,8 +12,9 @@ if [ ! -e $AMSACCFILE ]; then touch $AMSACCFILE; fi
 TMPFILE=`mktemp`
 (	flock 9
         # echo $(($(cat $AMSACCFILE)+1)) > $TMPFILE
-        cat $AMSACCFILE | awk '{printf "%07d\n",$1+1}' > $TMPFILE
-        cat $TMPFILE > $AMSACCFILE
+        tail -n1 $AMSACCFILE | awk '{printf "%07d\n",$1+1}' > $TMPFILE
+# awk 'BEGIN{ cmd="uuidgen"; cmd | getline UUID; close(cmd); print UUID}'
+        cat $TMPFILE >> $AMSACCFILE
 	) 9< /var/lock/amsaccession.lock
 
 cat $TMPFILE 
