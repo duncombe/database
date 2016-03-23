@@ -16,7 +16,7 @@ export INGEST_HOME=${INGEST_HOME:-$(pwd)}
 # generate a collection UUID and AMS accession
 # export COLLECTION=`uuidgen`
 
-read AMSACC COLLECTION <<< $( bin/getacc )
+read AMSACC COLLECTION <<< $( ${INGEST_HOME}/getacc )
 export AMSACC COLLECTION
 
 export SRCDIR="${1:?}"
