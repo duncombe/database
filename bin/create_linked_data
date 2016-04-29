@@ -25,6 +25,8 @@
 # export CATALOG=`pwd`/test-catalog1
 # export DATABASE=`pwd`/test-database1
 
+echo $0
+
 CATALOG=${CATALOG:?}
 DATABASE=${DATABASE:?}
 

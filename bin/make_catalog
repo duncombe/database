@@ -15,7 +15,7 @@ AMSACCFILE=${AMSACCFILE:-/DATA/amsaccession}
 if [ ! -e $AMSACCFILE ]; then touch $AMSACCFILE; fi
 
 if [ ! -e /var/lock/amsaccession.lock ]; then
-	echo Cannot get lockfile
+	echo $0: Cannot get lockfile
 	exit 2
 fi
 
