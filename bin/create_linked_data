@@ -2,6 +2,26 @@
 
 # read a catalog and link files from the database to a WAF 
 
+# We are changing the format of the WAF.
+# It was
+# DATA/
+#      ACCESSION/
+#                {UUID}/
+#                       {original-data-folder}/
+#
+# We want this to become
+# DATA/
+#      ACCESSION/
+#                {UUID}/
+#                       ABOUT/
+#                       0-DATA/{original-data-folder}/
+#                       1-DATA/{modified-data-folder}/
+# 
+# So we have to make allowance for:
+#     1. an additional level of linking
+#     2. specifying what version of the data we are writing
+#            
+
 # export CATALOG=`pwd`/test-catalog1
 # export DATABASE=`pwd`/test-database1
 
