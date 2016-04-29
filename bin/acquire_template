@@ -5,8 +5,11 @@
 # processing scripts are defined by INGEST_HOME
 export INGEST_HOME=${INGEST_HOME:?INGEST_HOME defines directory holding processing scripts}
 
-# dumping data into the database described by DATABASE, CATALOG, and
-# LOGFILE
+# dumping data into the database described by DATABASE, CATALOG, and LOGFILE
+# can assign a variable DATABASE_DIR that allows easy assignment of the rest
+# export DATABASE_DIR=/DATA/LOCALWEB/DATA
+# export CATALOG=$DATABASE_DIR/manifest.txt
+# etc
 export CATALOG=${CATALOG:?CATALOG: the manifest file, e.g., "/DATA/LOCALWEB/DATA/manifest.txt"}
 export DATABASE=${DATABASE:?DATABASE: the database directory, e.g., "/DATA/LOCALWEB/DATA/.DATABASE"}
 export LOGFILE=${LOGFILE:?LOGFILE: the log file, e.g., "/DATA/LOCALWEB/DATA/ingest.log"}
