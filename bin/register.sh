@@ -81,18 +81,19 @@ fi
 
 # check if the filepath is already in the catalog. If not create a UUID and 
 # add the details to the catalog
-if ( ! grep -v "^#" $catalog | grep "$filepath" > /dev/null ) ; then 
+uuid=$(grep -v "^#" ${catalog} | grep "${filepath}" | grep "${collection}" | cut -sf2 -d"	" )
+if [ -z "$uuid" ] ; then 
 	uuid=`uuidgen -r`
+else
+ 	echo \""$srcfile"\" already in database 1>&2
+	# echo "$filepath" 1>&2
+fi
 ##
 ## THE FOLLOWING LINE MUST CORRESPOND WITH THE COMMENT WHEN THE DATABASE WAS CREATED
 ## see variable MANIFESTFORM
 ##
 # revision must be the entry before filenamepath
-	echo -e "${chksum}\t${uuid}\t${accession_date}\t${collection}\t${parent}\t${amsacc}\t$revision\t${filepath}" >> ${catalog}
-else
- 	echo \""$srcfile"\" already in database 1>&2
-	# echo "$filepath" 1>&2
-fi
+echo -e "${chksum}\t${uuid}\t${accession_date}\t${collection}\t${parent}\t${amsacc}\t$revision\t${filepath}" >> ${catalog}
 
 # vim: se nowrap tw=0 :
 

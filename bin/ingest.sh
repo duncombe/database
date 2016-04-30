@@ -46,10 +46,10 @@ if [ -w ${LOGFILE} ] ; then
 
 	${INGEST_HOME}/make_catalog "${SOURCE_DIR}" | tee -a ${LOGFILE}
 
-# test the version of the data we are writing
-	i=0
-	while [ -e ${ACCESSION_DIR}/${DATAVERSION} ]; do i=$((i+1)); done
-	DATAVERSION=${i}-DATA
+# # test the version of the data we are writing
+# 	i=0
+# 	while [ -e ${ACCESSION_DIR}/${DATAVERSION} ]; do i=$((i+1)); done
+# 	DATAVERSION=${i}-DATA
 
 	${INGEST_HOME}/create_linked_data ${ACCESSION_DIR}  | tee -a ${LOGFILE}
 
