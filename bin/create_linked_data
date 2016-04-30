@@ -25,12 +25,13 @@
 # export CATALOG=`pwd`/test-catalog1
 # export DATABASE=`pwd`/test-database1
 
-echo $0
+# echo $0
 
 CATALOG=${CATALOG:?}
 DATABASE=${DATABASE:?}
 
 export LINKDIR=${1:?}
+
 
 LINKDIR=${LINKDIR%/}/
 DATABASE=${DATABASE%/}
@@ -66,6 +67,10 @@ cat $CATALOG | grep "$ACCID" |
 
 		# create the accession number from the datetime and UUID 
 		acc=$3 "=" $4
+
+		# add the version directory so "accession number" effectively
+		# becomes "date=UUID/version"
+		acc=acc "/" DATAVERSION
 
 		cmd2="test -d \"" SD "/" acc "/" path "\""
 		if (system(cmd2)==1){
