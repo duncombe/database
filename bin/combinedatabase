@@ -81,7 +81,8 @@ export DATABASE=$toDATABASE
 # that are in the incoming catalog. 
 
 # Column 4 are collection UUIDs 
-for COLLECTION in `grep -v "^#" $fromCATALOG  | cut -d\       -f4 | uniq`; do 
+#                                       this delimiter v is a TAB
+for COLLECTION in `grep -v "^#" $fromCATALOG  | cut -d\	 -f4 | uniq`; do 
 	$INGEST_HOME/create_linked_data ${toACCESSION_DIR} ${COLLECTION}
 done
 

@@ -1,18 +1,31 @@
 #! /bin/bash
 
 # gets a newaccession number and writes it back to the file
+# each accesssion number has a collection UUID
+# generate it here
 
 # getacc(){ 
+
+# LOCKFILE=lock
+LOCKFILE=${LOCKFILE:-/var/lock/amsaccession.lock}
+
+if [ ! -e $LOCKFILE ]; then exit 2; fi 
 
 AMSACCFILE=${AMSACCFILE:-/DATA/amsaccession}
 if [ ! -e $AMSACCFILE ]; then touch $AMSACCFILE; fi
 
 TMPFILE=`mktemp`
 (	flock 9
-        # echo $(($(cat $AMSACCFILE)+1)) > $TMPFILE
-        cat $AMSACCFILE | awk '{printf "%07d\n",$1+1}' > $TMPFILE
-        cat $TMPFILE > $AMSACCFILE
-	) 9< /var/lock/amsaccession.lock
+        # if the accession file is empty ie brand new then echo a line
+
+        { [ -s $AMSACCFILE ] || echo ; tail -n1 $AMSACCFILE ;} |
+		awk '{  cmd="uuidgen"
+			cmd | getline UUID
+			close(cmd)
+			printf "%07d\t%s\n",$1+1,UUID
+			}' > $TMPFILE
+        cat $TMPFILE >> $AMSACCFILE
+	) 9< $LOCKFILE
 
 cat $TMPFILE 
 rm -f $TMPFILE
