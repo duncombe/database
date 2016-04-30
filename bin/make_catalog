@@ -49,6 +49,8 @@ export ACCESSION_DATE=`date -u +"%Y%m%dT%H%M"`
 # if the submission has a PARENT use that identifier
 # otherwise the submission is the parent and the identifiers are the same
 export PARENT=${PARENT:-$COLLECTION}
+# Use a revision number if there is one, otherwise revision is zero.
+export REVISION=${REVISION:-0}
 
 # write what we are doing (goes to the logfile)
 
@@ -60,6 +62,7 @@ echo "DATABASE       = ${DATABASE}"
 echo "COLLECTION     = ${COLLECTION}"
 echo "ACCESSION_DATE = ${ACCESSION_DATE}"
 echo "PARENT         = ${PARENT}"
+echo "REVISION       = ${REVISION}"
 
 # echo $SRCDIR
 # echo $CATALOG

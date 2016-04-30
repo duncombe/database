@@ -17,6 +17,7 @@ collection=${COLLECTION:?}
 catalog=${CATALOG:?}
 database=${DATABASE:?}
 srcdir="${SRCDIR:?}"
+revision="${REVISION:?}"
 
 if [ ! -d ${database} ]; then 
 	mkdir -p $database
@@ -25,7 +26,12 @@ fi
 # ensure that database has no trailing /
 database="${database%/}"
 
-MANIFESTFORM="# SHASUM \t FILEUUID \t ACCESSION_DATE \t COLLECTION_UUID \t PARENT_UUID \t AMSACC \t filenamepath "
+##
+## THE FOLLOWING LINE MUST CORRESPOND WITH THE OUTPUT WHEN THE DATABASE IS WRITTEN
+## MANIFESTFORM
+## 
+# REVISION must be the entry before the filenamepath
+MANIFESTFORM="# SHASUM \t FILEUUID \t ACCESSION_DATE \t COLLECTION_UUID \t PARENT_UUID \t AMSACC \t REVISION \t filenamepath "
 
 if [ ! -f ${catalog} ]; then 
 	{
@@ -77,9 +83,12 @@ fi
 # add the details to the catalog
 if ( ! grep -v "^#" $catalog | grep "$filepath" > /dev/null ) ; then 
 	uuid=`uuidgen -r`
-## THIS LINE MUST CORRESPOND WITH THE COMMENT WHEN THE DATABASE WAS CREATED
-## MANIFESTFORM
-	echo -e "${chksum}\t${uuid}\t${accession_date}\t${collection}\t${parent}\t${amsacc}\t${filepath}" >> ${catalog}
+##
+## THE FOLLOWING LINE MUST CORRESPOND WITH THE COMMENT WHEN THE DATABASE WAS CREATED
+## see variable MANIFESTFORM
+##
+# revision must be the entry before filenamepath
+	echo -e "${chksum}\t${uuid}\t${accession_date}\t${collection}\t${parent}\t${amsacc}\t$revision\t${filepath}" >> ${catalog}
 else
  	echo \""$srcfile"\" already in database 1>&2
 	# echo "$filepath" 1>&2

@@ -27,8 +27,8 @@
 
 # echo $0
 
-CATALOG=${CATALOG:?}
-DATABASE=${DATABASE:?}
+export CATALOG=${CATALOG:?}
+export DATABASE=${DATABASE:?}
 
 export LINKDIR=${1:?}
 
@@ -46,10 +46,14 @@ function relpath() {
 
 # include the option to only link some of the entries (because we are modifying
 # an existing database where links for most entries in the catalog are already made. 
+
+export LINKPATH=$(relpath $DATABASE $LINKDIR) 
 cat $CATALOG | grep "$ACCID" | 
 	# tail -n 10 |
-	awk -v DB=${DATABASE} -v SD=${LINKDIR} -v RRD=$(relpath $DATABASE $LINKDIR) '
-		BEGIN{FS="\t"}
+	awk '	BEGIN{	FS="\t"
+			SD=ENVIRON["LINKDIR"] 
+			RD=ENVIRON["LINKPATH"]
+		}
 		/^#/{next}
 		{
 		# dir=substr($1,1,2) "/" substr($1,3,2) "/" substr($1,5,2)
@@ -58,7 +62,7 @@ cat $CATALOG | grep "$ACCID" |
 		# rawfile=substr($0,137)
 		rawfile=$NF
 
-		# cmd="ls -l \"" DB "/" dir "/" file "\""
+		# cmd="ls -l \"" ENVIRON["DATABASE"] "/" dir "/" file "\""
 
 		cmd="dirname \"" rawfile "\""
 		# print cmd
@@ -70,13 +74,13 @@ cat $CATALOG | grep "$ACCID" |
 
 		# add the version directory so "accession number" effectively
 		# becomes "date=UUID/version"
-		acc=acc "/" DATAVERSION
+		# penultimate field is the revision number. 
+		acc=acc "/" $(NF-1) "-DATA"
 
 		cmd2="test -d \"" SD "/" acc "/" path "\""
 		if (system(cmd2)==1){
 			cmd="mkdir -pv \"" SD "/" acc "/" path "\""
 			N=split(path,a,"/")+1
-			RD=RRD
 			for (i=1;i<=N;i++){RD="../" RD}
 
 			# print cmd

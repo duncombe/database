@@ -34,6 +34,8 @@ export DATABASE=${DATABASE:-"/DATA/PUBLICDATA/pub/.DATABASE"}
 export LOGFILE=${LOGFILE:-"/DATA/PUBLICDATA/pub/ingest.log"}
 export ACCESSION_DIR=${ACCESSION_DIR:-"/DATA/PUBLICDATA/pub/DATA/ACCESSION/"}
 export SOURCE_DIR="${1:?}"
+# Assume this is the original data submission if there is none specified
+export REVISION=${REVISION:-0}
 
 [ -d "${SOURCE_DIR}" ] || { echo ${SOURCE_DIR} is not accessible ; exit 1 ; } 
 [ -x "${SOURCE_DIR}" ] || { echo ${SOURCE_DIR} is not searchable ; exit 2 ; } 
@@ -49,7 +51,7 @@ if [ -w ${LOGFILE} ] ; then
 	while [ -e ${ACCESSION_DIR}/${DATAVERSION} ]; do i=$((i+1)); done
 	DATAVERSION=${i}-DATA
 
-	${INGEST_HOME}/create_linked_data ${ACCESSION_DIR}/${DATAVERSION}  | tee -a ${LOGFILE}
+	${INGEST_HOME}/create_linked_data ${ACCESSION_DIR}  | tee -a ${LOGFILE}
 
 else
 	echo ${LOGFILE} is not writable
