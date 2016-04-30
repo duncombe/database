@@ -30,6 +30,7 @@ echo LOGFILE=${LOGFILE}
 echo ACCESSION_DIR=${ACCESSION_DIR}
 echo AMSACCFILE=${AMSACCFILE}
 echo SOURCE_DIR=${SOURCE_DIR}
+echo Other variables that might be set: PARENT, REVISION
 
 read -p "Environmental variables are loaded. Complete the ingest (y) or stop (N)? " RESP
 RESP=${RESP^^} 

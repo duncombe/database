@@ -32,8 +32,8 @@ export DATABASE=${DATABASE:?}
 
 export LINKDIR=${1:?}
 
-
-LINKDIR=${LINKDIR%/}/
+# LINKDIR has a slash at the end, DATABASE does not
+LINKDIR=${LINKDIR%/}
 DATABASE=${DATABASE%/}
 
 # optional second argument is a grep pattern defining the catalog entries we
@@ -53,6 +53,8 @@ cat $CATALOG | grep "$ACCID" |
 	awk '	BEGIN{	FS="\t"
 			SD=ENVIRON["LINKDIR"] 
 			RD=ENVIRON["LINKPATH"]
+			# print RD
+			# print SD
 		}
 		/^#/{next}
 		{
@@ -80,8 +82,8 @@ cat $CATALOG | grep "$ACCID" |
 		cmd2="test -d \"" SD "/" acc "/" path "\""
 		if (system(cmd2)==1){
 			cmd="mkdir -pv \"" SD "/" acc "/" path "\""
-			N=split(path,a,"/")+1
-			for (i=1;i<=N;i++){RD="../" RD}
+			N=split(acc "/" path,a,"/")+1
+			for (i=1;i<N;i++){RD="../" RD}
 
 			# print cmd
 			# print rawfile
