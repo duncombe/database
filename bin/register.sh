@@ -18,6 +18,9 @@ catalog=${CATALOG:?}
 database=${DATABASE:?}
 srcdir="${SRCDIR:?}"
 revision="${REVISION:?}"
+manifestform="${MANIFESTFORM:?}"
+# manifestform is provided by the calling script and should look like this:
+# "# SHASUM \t FILEUUID \t ACCESSION_DATE \t COLLECTION_UUID \t PARENT_UUID \t AMSACC \t REVISION \t filenamepath "
 
 if [ ! -d ${database} ]; then 
 	mkdir -p $database
@@ -26,19 +29,10 @@ fi
 # ensure that database has no trailing /
 database="${database%/}"
 
-##
-## THE FOLLOWING LINE MUST CORRESPOND WITH THE OUTPUT WHEN THE DATABASE IS WRITTEN
-## MANIFESTFORM
-## 
-# REVISION must be the entry before the filenamepath
-MANIFESTFORM="# SHASUM \t FILEUUID \t ACCESSION_DATE \t COLLECTION_UUID \t PARENT_UUID \t AMSACC \t REVISION \t filenamepath "
 
 if [ ! -f ${catalog} ]; then 
-	{
-	echo "# Test database catalog"
-	# output to catalog is 
-	echo "${MANIFESTFORM}"
-	} > $catalog
+	echo Initialise and annotate catalog file \($catalog\) before registering data.
+	exit 1
 fi
 
 # 
@@ -89,7 +83,8 @@ else
 	# echo "$filepath" 1>&2
 fi
 ##
-## THE FOLLOWING LINE MUST CORRESPOND WITH THE COMMENT WHEN THE DATABASE WAS CREATED
+## THE FOLLOWING LINE MUST CORRESPOND WITH THE COMMENT WHEN THE DATABASE WAS
+## CREATED IIN THE CALLING SCRIPT
 ## see variable MANIFESTFORM
 ##
 # revision must be the entry before filenamepath

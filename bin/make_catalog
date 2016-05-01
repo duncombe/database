@@ -33,6 +33,7 @@
 # =======
 # >>>>>>> accessionfile
 export INGEST_HOME=${INGEST_HOME:-$(pwd)}
+export SCRIPTVERSION=$(tail -n1 $INGEST_HOME/version)
 
 # generate a collection UUID and AMS accession
 # export COLLECTION=`uuidgen`
@@ -57,9 +58,17 @@ export ACCESSION_DATE=`date -u +"%Y%m%dT%H%M"`
 export PARENT=${PARENT:-$COLLECTION}
 # Use a revision number if there is one, otherwise revision is zero.
 export REVISION=${REVISION:-0}
+##
+## THE FOLLOWING LINE MUST CORRESPOND WITH THE OUTPUT IN REGISTER.SH WHEN 
+## THE DATABASE IS WRITTEN
+## MANIFESTFORM
+## 
+# REVISION must be the entry before the filenamepath
+export MANIFESTFORM="# SHASUM \t FILEUUID \t ACCESSION_DATE \t COLLECTION_UUID \t PARENT_UUID \t AMSACC \t REVISION \t filenamepath "
 
 # write what we are doing (goes to the logfile)
 
+echo "SCRIPTVERSION  = ${SCRIPTVERSION}"
 echo "AMSACC         = ${AMSACC}"
 echo "INGEST_HOME    = ${INGEST_HOME}"
 echo "SRCDIR         = ${SRCDIR}"
@@ -80,8 +89,23 @@ echo "REVISION       = ${REVISION}"
 # echo $COLLECTION
 # echo $PARENT
 
+# Before we run register, lets check the catalog file exists and write a
+# comment what we are doing and who we are. 
+if [ ! -f ${CATALOG} ]; then 
+	{
+	echo "# Test database catalog"
+	# output to catalog is 
+	} > $CATALOG
+fi
+
+{ 
+echo "# database script version: $SCRIPTVERSION"
+echo "# database scripts run by ${USER}@${HOSTNAME} at `date` "
+echo "${MANIFESTFORM}" 
+} >> $CATALOG
+	
+
 # descend through SRCDIR and register all files and directories
 # find "${SRCDIR}" -type f -exec bash $(pwd)/register.sh \{\} \;
 find "${SRCDIR}" -type f -exec bash ${INGEST_HOME}/register.sh \{\} \;
-
 

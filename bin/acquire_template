@@ -2,6 +2,9 @@
 # ingest template processor 
 # defines the environmental variables that configure the ingest script 
 
+########################################################
+# Change default data here
+# 
 # processing scripts are defined by INGEST_HOME
 export INGEST_HOME=${INGEST_HOME:?INGEST_HOME defines directory holding processing scripts}
 
@@ -22,6 +25,10 @@ export AMSACCFILE="${AMSACCFILE:?Get the next AMS accession number from this fil
 
 # the source directory is defined by SOURCE_DIR
 export SOURCE_DIR="${1:?Provide the source directory as the first argument }"
+
+# 
+# No further environmental variables to change beyond this point.
+#################################################################
 
 echo INGEST_HOME=${INGEST_HOME}
 echo CATALOG=${CATALOG}

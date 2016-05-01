@@ -9,7 +9,7 @@
 # LOCKFILE=lock
 LOCKFILE=${LOCKFILE:-/var/lock/amsaccession.lock}
 
-if [ ! -e $LOCKFILE ]; then exit 2; fi 
+if [ ! -e $LOCKFILE ]; then echo "No lockfile. Quitting."; exit 2; fi 
 
 AMSACCFILE=${AMSACCFILE:-/DATA/amsaccession}
 if [ ! -e $AMSACCFILE ]; then touch $AMSACCFILE; fi
