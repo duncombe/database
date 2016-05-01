@@ -11,13 +11,12 @@ export AMSACCFILE=${AMSACCFILE:?AMSACCFILE is not set. Set environment variables
 MANIFESTFILE=${1:?}
 
 # check that this is a valid file to work on 
-if [ $(grep "^#.*SHASUM" ${MANIFESTFILE} | awk 'END{print NF}') >= 16 ]; then
+if [ $(grep "^#.*SHASUM" ${MANIFESTFILE} | awk 'END{print NF}') -ge 14 ]; then
 	echo $MANIFESTFILE has already been processed. Cannot reprocess.
 	exit 1
 fi
 
 BINDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-export SCRIPTVERSION=$(tail -n1 $BINDIR/version)
 
 TEMPFILE=`mktemp`
 
@@ -41,15 +40,18 @@ TEMPFILE=`mktemp`
 
 awk -v BINDIR=$BINDIR	\
 	'BEGIN{FS="\t"; OFS="\t"; collid=""}
-	/^#/{print}
-	/^# SHASUM/{
-		print "# catalog file converted to database script version: " getenv("SCRIPTVERSION")
-		print "# conversion script run by " getenv("USER") "@" getenv("HOSTNAME") " at " strftime()
-		print "# SHASUM \\t FILEUUID \\t ACCESSION_DATE \\t COLLECTION_UUID \\t PARENT_UUID \\t AMSACC \\t REVISION \\t filenamepath "}
-	!/^#/{  
-		for(i=1;i<=(NF-1);i++){ printf "%s\t",$i}
-		# print the revision number 
-		printf "0\t%s",$NF; printf "\n"
+	/^#/{print} 
+	/^# SHASUM/{print "# SHASUM \\t FILEUUID \\t ACCESSION_DATE \\t COLLECTION_UUID \\t PARENT_UUID \\t AMSACC \\t filenamepath "}
+	!/^#/{  if (collid != $4){ 
+			command=BINDIR "/getacc"
+			command | getline AMSACC 
+			close(command)
+		}
+		for(i=1;i<=4;i++){ printf "%s\t",$i}
+		# print the parent collection id and the AMS accession number
+		printf "%s\t%s",$4,AMSACC
+		for(i=5;i<=NF;i++){printf "\t%s",$i}; printf "\n"
+		collid=$4
 		}
 	'  $MANIFESTFILE > $TEMPFILE
 
