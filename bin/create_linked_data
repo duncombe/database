@@ -27,12 +27,14 @@
 
 # echo $0
 
+INGEST_HOME=${INGEST_HOME:?Set environment variable INGEST_HOME with directory with executables}
+
 export CATALOG=${CATALOG:?}
 export DATABASE=${DATABASE:?}
 
 export LINKDIR=${1:?}
 
-# LINKDIR has a slash at the end, DATABASE does not
+# ensure there are no trailing slashes
 LINKDIR=${LINKDIR%/}
 DATABASE=${DATABASE%/}
 
@@ -48,69 +50,73 @@ function relpath() {
 # an existing database where links for most entries in the catalog are already made. 
 
 export LINKPATH=$(relpath $DATABASE $LINKDIR) 
-cat $CATALOG | grep "$ACCID" | 
-	# tail -n 10 |
-	awk '	BEGIN{	FS="\t"
-			SD=ENVIRON["LINKDIR"] 
-			RD=ENVIRON["LINKPATH"]
-			# print RD
-			# print SD
-		}
-		/^#/{next}
-		{
-		# dir=substr($1,1,2) "/" substr($1,3,2) "/" substr($1,5,2)
-		dir=substr($1,1,2) 
-		file=substr($1,3)
-		# rawfile=substr($0,137)
-		rawfile=$NF
+cat $CATALOG | grep "$ACCID" | awk -f ${INGEST_HOME}/createlink.awk
 
-		# cmd="ls -l \"" ENVIRON["DATABASE"] "/" dir "/" file "\""
-
-		cmd="dirname \"" rawfile "\""
-		# print cmd
-
-		cmd | getline path ;  close(cmd)
-
-		# create the accession number from the datetime and UUID 
-		acc=$3 "=" $4
-
-		# add the version directory so "accession number" effectively
-		# becomes "date=UUID/version"
-		# penultimate field is the revision number. 
-		acc=acc "/" $(NF-1) "-DATA"
-
-		cmd2="test -d \"" SD "/" acc "/" path "\""
-		if (system(cmd2)==1){
-			cmd="mkdir -pv \"" SD "/" acc "/" path "\""
-			N=split(acc "/" path,a,"/")+1
-			for (i=1;i<N;i++){RD="../" RD}
-
-			# print cmd
-			# print rawfile
-			system(cmd) ; close(cmd)
-		}
-		close(cmd2)
-
-		if (length(file)!=0 && length(rawfile)!=0){
-			isnotalink="test -L \"" SD "/" acc "/" rawfile "\""
-			# beware: sense of system is opposite to what you might
-			# expect. returns 0 (in gawk false) if the 
-			# file is a link, 1 (in gawk true) if it is not. 
-			# So if the link does not exist, create it.
-			if (system(isnotalink)){
-				# print isnotalink
-				#    ln  -sf  (   linkpointer         ) (                          )
-				#   -----------    ---     ---      -------    ---     ---        ---- 
-				cmd="ln -sf \"" RD "/" dir "/" file "\" \"" SD "/" acc "/" rawfile "\""
-				# print cmd
-				system(cmd) ; close(cmd)
-				}
-			close(isnotalink)
-			}
-		else{
-			print "Bad catalog entry: " FNR " (" NR ")" > "/dev/stderr"
-			}
-		}' 
+# 
+# We have split out the awk script from the shell script
+# 
+# 	awk '	BEGIN{	FS="\t"
+# 			SD=ENVIRON["LINKDIR"] 
+# 			RRD=ENVIRON["LINKPATH"]
+# 			# print RD
+# 			# print SD
+# 		}
+# 		/^#/{next}
+# 		{
+# 		# dir=substr($1,1,2) "/" substr($1,3,2) "/" substr($1,5,2)
+# 		dir=substr($1,1,2) 
+# 		file=substr($1,3)
+# 		# rawfile=substr($0,137)
+# 		rawfile=$NF
+# 
+# 		# cmd="ls -l \"" ENVIRON["DATABASE"] "/" dir "/" file "\""
+# 
+# 		cmd="dirname \"" rawfile "\""
+# 		# print cmd
+# 
+# 		cmd | getline path ;  close(cmd)
+# 
+# 		# create the accession number from the datetime and UUID 
+# 		acc=$3 "=" $4
+# 
+# 		# add the version directory so "accession number" effectively
+# 		# becomes "date=UUID/version"
+# 		# penultimate field is the revision number. 
+# 		acc=acc "/" $(NF-1) "-DATA"
+# 
+# 		cmd2="test -d \"" SD "/" acc "/" path "\""
+# 		RD=RRD
+# 		if (system(cmd2)==1){
+# 			cmd="mkdir -pv \"" SD "/" acc "/" path "\""
+# 			N=split(acc "/" path,a,"/")+1
+# 			for (i=1;i<N;i++){RD="../" RD}
+# 
+# 			# print cmd
+# 			# print rawfile
+# 			system(cmd) ; close(cmd)
+# 		}
+# 		close(cmd2)
+# 
+# 		if (length(file)!=0 && length(rawfile)!=0){
+# 			isnotalink="test -L \"" SD "/" acc "/" rawfile "\""
+# 			# beware: sense of system is opposite to what you might
+# 			# expect. returns 0 (in gawk false) if the 
+# 			# file is a link, 1 (in gawk true) if it is not. 
+# 			# So if the link does not exist, create it.
+# 			if (system(isnotalink)){
+# 				# print isnotalink
+# 				#    ln  -sf  (   linkpointer         ) (                          )
+# 				#   -----------    ---     ---      -------    ---     ---        ---- 
+# 				cmd="ln -sf \"" RD "/" dir "/" file "\" \"" SD "/" acc "/" rawfile "\""
+# 				# print cmd
+# 				system(cmd) ; close(cmd)
+# 				}
+# 			close(isnotalink)
+# 			}
+# 		else{
+# 			print "Bad catalog entry: " FNR " (" NR ")" > "/dev/stderr"
+# 			}
+# 		}' 
 
 # vi: se nowrap tw=0 :
 
