@@ -1,0 +1,34 @@
+#!/bin/bash
+
+export CATALOG=${CATALOG:?}
+# export DATABASE=${DATABASE:?}
+# export LOGFILE=${LOGFILE:?}
+export ACCESSION_DIR=${ACCESSION_DIR:?}
+
+gawk '	BEGIN{ ACCESSION=ENVIRON["ACCESSION_DIR"]
+		}
+	/^#/{	if(length(HEADER)==0){
+			HEADER=$0 }
+		else{ HEADER=HEADER "\n" $0 }
+		next
+		}
+	{ 	acc=$3 "=" $4
+		aboutdir=ACCESSION "/" acc "/ABOUT"
+		cmd="test -d " aboutdir
+		if(system(cmd)){
+			cmd1="mkdir " aboutdir
+			system(cmd1)
+			close(cmd1)
+			}
+		close(cmd)
+		manifestfile=aboutdir "/manifest.txt" 
+		print HEADER > manifestfile ; HEADER=""
+		printf "%s", $0  > manifestfile
+	} ' $CATALOG
+
+	
+		
+
+
+# vi: se nowrap tw=0 :
+
