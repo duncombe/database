@@ -2,11 +2,8 @@
 
 export VERSION_CONTROL=numbered 
 
-# converts manifest file from n column data to n+2 column data
-# adding a parent accession number and an AMS accession number 
-
-# export AMSACCFILE=${AMSACCFILE:-/DATA/amsaccession}
-# export AMSACCFILE=${AMSACCFILE:?AMSACCFILE is not set. Set environment variables before running $0}
+# converts manifest file from n column data to n+1 column data
+# adding a revision number
 
 MANIFESTFILE=${1:?}
 
