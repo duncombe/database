@@ -1,0 +1,16 @@
+export ACCESSION_DIR=ACCESSION
+export CATALOG=manifest.txt 
+export DATABASE=.DATABASE
+
+FIXBIN=/DATA/database/bin/fix-ver2-ver3.sh
+${FIXBIN} manifest.txt
+
+export INGEST_HOME=/DATA/database/bin
+
+mkdir -p trash
+mv -i $ACCESSION_DIR/* trash
+
+$INGEST_HOME/create_linked_data $ACCESSION_DIR
+
+$INGEST_HOME/create_about
+
