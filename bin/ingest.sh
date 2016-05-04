@@ -52,6 +52,7 @@ if [ -w ${LOGFILE} ] ; then
 # 	DATAVERSION=${i}-DATA
 
 	${INGEST_HOME}/create_linked_data ${ACCESSION_DIR}  | tee -a ${LOGFILE}
+	# ${INGEST_HOME}/create_about
 
 else
 	echo ${LOGFILE} is not writable
