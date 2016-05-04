@@ -36,6 +36,7 @@ export ACCESSION_DIR=${ACCESSION_DIR:-"/DATA/PUBLICDATA/pub/DATA/ACCESSION/"}
 export SOURCE_DIR="${1:?}"
 # Assume this is the original data submission if there is none specified
 export REVISION=${REVISION:-0}
+export COLLECTION_TITLE=${COLLECTION_TITLE:?Provide a title for collection (COLLECTION_TITLE)}
 
 [ -d "${SOURCE_DIR}" ] || { echo ${SOURCE_DIR} is not accessible ; exit 1 ; } 
 [ -x "${SOURCE_DIR}" ] || { echo ${SOURCE_DIR} is not searchable ; exit 2 ; } 
@@ -52,10 +53,12 @@ if [ -w ${LOGFILE} ] ; then
 # 	DATAVERSION=${i}-DATA
 
 	${INGEST_HOME}/create_linked_data ${ACCESSION_DIR}  | tee -a ${LOGFILE}
-	# ${INGEST_HOME}/create_about
+	${INGEST_HOME}/create_about
 
 else
 	echo ${LOGFILE} is not writable
 	exit 3
 fi
+
+# vi: se nowrap tw=0 :
 

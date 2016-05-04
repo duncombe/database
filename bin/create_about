@@ -4,6 +4,34 @@ export CATALOG=${CATALOG:?}
 # export DATABASE=${DATABASE:?}
 # export LOGFILE=${LOGFILE:?}
 export ACCESSION_DIR=${ACCESSION_DIR:?}
+export COLLECTION_TITLE=${COLLECTION_TITLE:?Provide a title for collection (COLLECTION_TITLE)}
+export INDEXFILE=$ACCESSION_DIR/index.html
+
+if [ -e $INDEXFILE ]; then
+	:
+else
+	cat <<-ENDIN > $INDEXFILE
+		<!DOCTYPE html>
+		<html>
+		
+		<head>
+		  <title>Our Company</title>
+		</head>
+		
+		<body>
+		
+		  <h1>MIMS Data Accessions Subset</h1>
+		  <h2>Accessions List</h2>
+		
+		  <ol>
+		<!-- PLACE NEW ACCESSION HERE -->
+		<!-- <li> <a href="ACCESSION-UUID/REVISION-DATA">AMSACC</a> <a href="ACCESSION-UUID">TITLE</a></li> -->
+		  </ol>
+		
+		</body>
+		</html> 
+	ENDIN
+fi
 
 gawk '	BEGIN{ ACCESSION=ENVIRON["ACCESSION_DIR"]
 		}
@@ -26,8 +54,18 @@ gawk '	BEGIN{ ACCESSION=ENVIRON["ACCESSION_DIR"]
 		printf "%s", $0  > manifestfile
 	} ' $CATALOG
 
-	
-		
+awk '
+	BEGIN{
+		# input the index file
+		# write the header and old entries
+		}
+	{ 
+		# from the catalog file: 
+			# determine if there is a new index entry
+			# add the new entry
+	END{
+		# write the rest of the index file
+	}' $CATALOG
 
 
 # vi: se nowrap tw=0 :
