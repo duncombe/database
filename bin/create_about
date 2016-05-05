@@ -1,11 +1,25 @@
 #!/bin/bash
 
-export CATALOG=${CATALOG:?}
 # export DATABASE=${DATABASE:?}
 # export LOGFILE=${LOGFILE:?}
+export CATALOG=${CATALOG:?}
 export ACCESSION_DIR=${ACCESSION_DIR:?}
 export COLLECTION_TITLE=${COLLECTION_TITLE:?Provide a title for new collection (COLLECTION_TITLE)}
 export INDEXFILE=$ACCESSION_DIR/index.html
+
+# confirm 
+echo CATALOG=${CATALOG}
+echo ACCESSION_DIR=${ACCESSION_DIR}
+echo COLLECTION_TITLE=${COLLECTION_TITLE}
+echo INDEXFILE=${INDEXFILE}
+
+read -p "Environmental variables are loaded. Continue (y/N)? " RESP
+RESP=${RESP^^} 
+if [ "${RESP:0:1}" != "Y" ]; then
+	echo Abandoned processing
+	exit 
+fi
+#
 
 # this index.html must have a particular format: create it if it does not exist.
 if [ -e $INDEXFILE ]; then
@@ -16,7 +30,7 @@ else
 		<html>
 		
 		<head>
-		<title>Our Company</title>
+		<title>MIMS Data</title>
 		</head>
 		
 		<body>
@@ -24,17 +38,21 @@ else
 		<h1>MIMS Data Accessions Subset</h1>
 		<h2>Accessions List</h2>
 		
-		<ol>
+		<a href="../">Parent directory</a>
+
+		<ul>
 		<!-- PLACE NEW ACCESSION HERE -->
 		<!-- START OF LIST MARKER -->
-		<!-- <li> <a href="ACCESSION-UUID/REVISION-DATA">AMSACC</a> <a href="ACCESSION-UUID">TITLE</a></li> -->
+		<!-- <li> <a href="ACCESSION-UUID/REVISION-DATA">AMSACC</a> &nbsp; <a href="ACCESSION-UUID">TITLE</a></li> -->
 		<!-- END OF LIST MARKER -->
-		</ol>
+		</ul>
 		
 		</body>
 		</html> 
 	ENDIN
-fi
+	echo Created new index file \($INDEXFILE\)
+fi 
+
 
 # create the ABOUT directory and populate
 gawk '	BEGIN{ ACCESSION=ENVIRON["ACCESSION_DIR"]
@@ -57,6 +75,7 @@ gawk '	BEGIN{ ACCESSION=ENVIRON["ACCESSION_DIR"]
 		print HEADER > manifestfile ; HEADER=""
 		printf "%s", $0  > manifestfile
 	} ' $CATALOG
+echo Populated $ACCESSION_DIR/ABOUT
 
 # update the ACCESSION/index.html
 TMPFILE=$(mktemp)
@@ -96,7 +115,7 @@ awk --re-interval '
 # 			if(INDFILE[i]~$4){print "starting next"; next}
 # 		}
 # 			# add the new entry
- 		entry= " <li> <a href=\"" $3 "=" $4 "/" $(NF-1) "-DATA\">" $(NF-2) "</a> <a href=\"" $3 "=" $4 "\">" ENVIRON["COLLECTION_TITLE"] "</a></li>"
+ 		entry= " <li> <a href=\"" $3 "=" $4 "/" $(NF-1) "-DATA\">" $(NF-2) "</a> &nbsp; <a href=\"" $3 "=" $4 "\">" ENVIRON["COLLECTION_TITLE"] "</a></li>"
 		LIST[$4]=entry
 		print entry
 		}
@@ -105,7 +124,8 @@ awk --re-interval '
 		for(i=J;i<=N;i++){print INDFILE[i]}
 	}' $CATALOG > $TMPFILE
 
-mv $TMPFILE $INDEXFILE
+mv -b $TMPFILE $INDEXFILE
+echo Updated $INDEXFILE
 
 
 # vi: se nowrap tw=0 :
