@@ -3,13 +3,18 @@
 # gets a newaccession number and writes it back to the file
 # each accesssion number has a collection UUID
 # generate it here
+# the call to this returns three arguments
+# AMSACC UUID EXITLVL
 
 # getacc(){ 
 
 # LOCKFILE=lock
 LOCKFILE=${LOCKFILE:-/var/lock/amsaccession.lock}
 
-if [ ! -e $LOCKFILE ]; then echo "No lockfile. Quitting."; exit 2; fi 
+if [ ! -e $LOCKFILE ]; then
+	echo -e "0000000\t000000000-0000-0000-0000-000000000000\t2"
+	exit 2
+fi 
 
 AMSACCFILE=${AMSACCFILE:-/DATA/amsaccession}
 if [ ! -e $AMSACCFILE ]; then touch $AMSACCFILE; fi
@@ -27,7 +32,7 @@ TMPFILE=`mktemp`
         cat $TMPFILE >> $AMSACCFILE
 	) 9< $LOCKFILE
 
-cat $TMPFILE 
+echo -e "$(cat $TMPFILE)\t0"
 rm -f $TMPFILE
 
 #       }
