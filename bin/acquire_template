@@ -40,6 +40,8 @@ echo AMSACCFILE=${AMSACCFILE}
 echo SOURCE_DIR=${SOURCE_DIR}
 echo COLLECTION_TITLE=${COLLECTION_TITLE}
 echo Other variables that might be set: PARENT, REVISION
+echo REVISION=${REVISION:-0}
+echo PARENT=${PARENT}
 
 read -p "Environmental variables are loaded. Complete the ingest (y) or stop (N)? " RESP
 RESP=${RESP^^} 
