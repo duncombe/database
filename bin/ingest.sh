@@ -41,24 +41,18 @@ export COLLECTION_TITLE=${COLLECTION_TITLE:?Provide a title for collection (COLL
 [ -d "${SOURCE_DIR}" ] || { echo ${SOURCE_DIR} is not accessible ; exit 1 ; } 
 [ -x "${SOURCE_DIR}" ] || { echo ${SOURCE_DIR} is not searchable ; exit 2 ; } 
 
-[ -e ${LOGFILE} ] || touch ${LOGFILE}
+# test permissions 
+[ -e ${LOGFILE} ] || touch ${LOGFILE} 
+[ -w ${LOGFILE} ] || { echo ${LOGFILE} is not writable;  exit 3 ; }
+[ -w ${CATALOG} ] || { echo ${CATALOG} is not writable;  exit 4 ; }
+[ -w ${DATABASE} ] || { echo ${DATABASE} is not writable;  exit 5 ; }
 
-if [ -w ${LOGFILE} ] ; then 
 
-	${INGEST_HOME}/make_catalog "${SOURCE_DIR}" | tee -a ${LOGFILE}
+${INGEST_HOME}/make_catalog "${SOURCE_DIR}" | tee -a ${LOGFILE}
 
-# # test the version of the data we are writing
-# 	i=0
-# 	while [ -e ${ACCESSION_DIR}/${DATAVERSION} ]; do i=$((i+1)); done
-# 	DATAVERSION=${i}-DATA
+${INGEST_HOME}/create_linked_data ${ACCESSION_DIR}  | tee -a ${LOGFILE}
 
-	${INGEST_HOME}/create_linked_data ${ACCESSION_DIR}  | tee -a ${LOGFILE}
-	${INGEST_HOME}/create_about
-
-else
-	echo ${LOGFILE} is not writable
-	exit 3
-fi
+${INGEST_HOME}/create_about
 
 # vi: se nowrap tw=0 :
 
