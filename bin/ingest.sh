@@ -44,20 +44,17 @@ export COLLECTION_TITLE=${COLLECTION_TITLE:?Provide a title for collection (COLL
 # test permissions 
 function alterable(){
 	if [ -e ${1} ] ; then 
-		[ -w ${1} ] || { echo ${1} is not writable;  exit 4 ; }
+		[ -w ${1} ] || { echo ${1} is not writable;  false ; return; }
 	else
-		[ -w $(dirname ${1}) ] || { echo $(dirname ${1}) is not writable;  exit 4 ; }
+		[ -w $(dirname ${1}) ] || { echo $(dirname ${1}) is not writable;  false; return; }
 	fi
+	true
 }
 
 [ -e ${LOGFILE} ] || touch ${LOGFILE} 
 [ -w ${LOGFILE} ] || { echo ${LOGFILE} is not writable;  exit 3 ; }
-if [ -e ${CATALOG} ] ; then 
-	[ -w ${CATALOG} ] || { echo ${CATALOG} is not writable;  exit 4 ; }
-else
-	[ -w $(dirname ${CATALOG}) ] || { echo $(dirname ${CATALOG}) is not writable;  exit 4 ; }
-fi
-[ -w ${DATABASE} ] || { echo ${DATABASE} is not writable;  exit 5 ; }
+alterable ${CATALOG} || exit 4
+alterable ${DATABASE} || exit 5
 
 
 ${INGEST_HOME}/make_catalog "${SOURCE_DIR}" | tee -a ${LOGFILE}
