@@ -42,9 +42,21 @@ export COLLECTION_TITLE=${COLLECTION_TITLE:?Provide a title for collection (COLL
 [ -x "${SOURCE_DIR}" ] || { echo ${SOURCE_DIR} is not searchable ; exit 2 ; } 
 
 # test permissions 
+function alterable(){
+	if [ -e ${1} ] ; then 
+		[ -w ${1} ] || { echo ${1} is not writable;  exit 4 ; }
+	else
+		[ -w $(dirname ${1}) ] || { echo $(dirname ${1}) is not writable;  exit 4 ; }
+	fi
+}
+
 [ -e ${LOGFILE} ] || touch ${LOGFILE} 
 [ -w ${LOGFILE} ] || { echo ${LOGFILE} is not writable;  exit 3 ; }
-[ -w ${CATALOG} ] || { echo ${CATALOG} is not writable;  exit 4 ; }
+if [ -e ${CATALOG} ] ; then 
+	[ -w ${CATALOG} ] || { echo ${CATALOG} is not writable;  exit 4 ; }
+else
+	[ -w $(dirname ${CATALOG}) ] || { echo $(dirname ${CATALOG}) is not writable;  exit 4 ; }
+fi
 [ -w ${DATABASE} ] || { echo ${DATABASE} is not writable;  exit 5 ; }
 
 
