@@ -3,7 +3,7 @@
 # gets a newaccession number and writes it back to the file
 # each accesssion number has a collection UUID
 # generate it here
-# the call to this returns three arguments
+# the call to this function returns three arguments
 # AMSACC UUID EXITLVL
 
 # getacc(){ 

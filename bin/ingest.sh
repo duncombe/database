@@ -25,6 +25,11 @@
 #            
 
 # TODO: test for valid user:group
+# We do this by checking if certain files are writeable
+
+# If the lockfile does not exist, bomb out immediately
+LOCKFILE=${LOCKFILE:-/var/lock/amsaccession.lock}
+if [ ! -e $LOCKFILE ]; then exit 12;  fi
 
 # set the base directory for the ingest code
 INGEST_HOME=${INGEST_HOME:?Set environment variable INGEST_HOME}
@@ -56,12 +61,19 @@ function alterable(){
 alterable ${CATALOG} || exit 4
 alterable ${DATABASE} || exit 5
 
-
+set -o pipefail
 ${INGEST_HOME}/make_catalog "${SOURCE_DIR}" | tee -a ${LOGFILE}
+set +o pipefail
+
+echo Made catalog 
 
 ${INGEST_HOME}/create_linked_data ${ACCESSION_DIR}  | tee -a ${LOGFILE}
 
+echo Created linked data
+
 ${INGEST_HOME}/create_about
+
+echo Created ABOUT. Done.
 
 # vi: se nowrap tw=0 :
 
