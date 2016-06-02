@@ -4,7 +4,7 @@
 # howbig UUID
 # ID=6990ec09-0d4c-47aa-9421-8b06b454422c
 
-ID=$1
+ID=${1:?}
 
 for f in `locate -0 $ID | xargs -0n1 dirname | grep -v /trash | uniq | grep =$ID$`; do 
 	du -sbL --exclude=trash $f
