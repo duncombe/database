@@ -67,6 +67,8 @@ set +o pipefail
 
 echo Made catalog 
 
+echo Creating linked data \(may take a while\) ...
+
 ${INGEST_HOME}/create_linked_data ${ACCESSION_DIR}  | tee -a ${LOGFILE}
 
 echo Created linked data
