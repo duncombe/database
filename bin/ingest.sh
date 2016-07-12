@@ -29,7 +29,10 @@
 
 # If the lockfile does not exist, bomb out immediately
 LOCKFILE=${LOCKFILE:-/var/lock/amsaccession.lock}
-if [ ! -e $LOCKFILE ]; then exit 12;  fi
+if [ ! -e $LOCKFILE ]; then 
+	echo The lock file is not accessible
+	exit 12
+fi
 
 # set the base directory for the ingest code
 INGEST_HOME=${INGEST_HOME:?Set environment variable INGEST_HOME}
@@ -75,7 +78,9 @@ echo Created linked data
 
 ${INGEST_HOME}/create_about
 
-echo Created ABOUT. Done.
+echo Created ABOUT
+
+echo Done.
 
 # vi: se nowrap tw=0 :
 

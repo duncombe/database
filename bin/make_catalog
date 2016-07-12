@@ -40,7 +40,8 @@ export REVISION=${REVISION:-0}
 # REVISION must be the entry before the filenamepath
 export MANIFESTFORM="# SHASUM \t FILEUUID \t ACCESSION_DATE \t COLLECTION_UUID \t PARENT_UUID \t AMSACC \t REVISION \t filenamepath "
 
-# write what we are doing (goes to the logfile)
+# write what we are doing (goes to the logfile), also write it later to an
+# accinfo file
 
 echo "SCRIPTVERSION  = ${SCRIPTVERSION}"
 echo "AMSACC         = ${AMSACC}"
@@ -81,5 +82,30 @@ echo "${MANIFESTFORM}"
 
 # descend through SRCDIR and register all files and directories
 # find "${SRCDIR}" -type f -exec bash $(pwd)/register.sh \{\} \;
-find "${SRCDIR}" -type f -exec bash ${INGEST_HOME}/register.sh \{\} \;
+find "${SRCDIR}" -type f -exec bash ${INGEST_HOME}/register.sh \{\} \; && {
+# If we succeed, write information about what we did 
+	ACCINFO_FILE=accessioned_as.txt
+
+	[ -w "${SRCDIR}" ] &&
+		ACCINFO=${SRCDIR%/}/$ACCINFO_FILE ||
+		ACCINFO=./$ACCINFO_FILE
+
+	{
+		echo  COLLECTION_TITLE = ${COLLECTION_TITLE}
+		echo "AMSACC           = ${AMSACC}"
+		echo "ACCESSION_DATE   = ${ACCESSION_DATE}"
+		echo "COLLECTION       = ${COLLECTION}"
+		echo "PARENT           = ${PARENT}"
+		echo "SRCDIR           = ${SRCDIR}"
+		echo "SCRIPTVERSION    = ${SCRIPTVERSION}"
+		echo "INGEST_HOME      = ${INGEST_HOME}"
+		echo "CATALOG          = ${CATALOG}"
+		echo "DATABASE         = ${DATABASE}"
+		echo "REVISION         = ${REVISION}"
+		echo  LOGFILE          = ${LOGFILE}
+		echo  ACCESSION_DIR    = ${ACCESSION_DIR}
+		# echo  SOURCE_DIR="${SOURCE_DIR}"
+		} >> ${ACCINFO}
+	}
+
 
