@@ -1,5 +1,6 @@
 #! /bin/bash
 
+# this is for GNU coreutils -  backup type when copying a file
 export VERSION_CONTROL=numbered 
 
 # converts manifest file from n column data to n+2 column data

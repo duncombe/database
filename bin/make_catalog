@@ -6,7 +6,8 @@
 # export DATABASE=`pwd`/test-database1
 
 export INGEST_HOME=${INGEST_HOME:-$(pwd)}
-export SCRIPTVERSION=$(tail -n1 $INGEST_HOME/version)
+# export SCRIPTVERSION=$(tail -n1 $INGEST_HOME/version)
+export SCRIPTVERSION=$(cd $INGEST_HOME; git describe --abbrev=3 --tags)
 
 # generate a collection UUID and AMS accession
 # export COLLECTION=`uuidgen`
