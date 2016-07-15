@@ -124,7 +124,11 @@ awk --re-interval '
 		for(i=J;i<=N;i++){print INDFILE[i]}
 	}' $CATALOG > $TMPFILE
 
+# mktemp above sets the permissions conservatively. Let us keep the previous 
+# permissions of the index file
+chmod --reference=$INDEXFILE $TMPFILE
 mv -b $TMPFILE $INDEXFILE
+
 echo Updated $INDEXFILE
 
 
