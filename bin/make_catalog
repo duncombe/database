@@ -21,6 +21,8 @@ export SRCDIR="${1:?}"
 export CATALOG=${CATALOG:?}
 export DATABASE=${DATABASE:?}
 
+
+
 # ensure that SRCDIR goes out with a trailing /
 SRCDIR="${SRCDIR%/}/"
 
@@ -85,6 +87,7 @@ echo "${MANIFESTFORM}"
 # find "${SRCDIR}" -type f -exec bash $(pwd)/register.sh \{\} \;
 find "${SRCDIR}" -type f -exec bash ${INGEST_HOME}/register.sh \{\} \; && {
 # If we succeed, write information about what we did 
+	# MOUNTED_ON=$(
 	ACCINFO_FILE=accessioned_as.txt
 
 	[ -w "${SRCDIR}" ] &&
@@ -101,10 +104,14 @@ find "${SRCDIR}" -type f -exec bash ${INGEST_HOME}/register.sh \{\} \; && {
 		echo "ACCESSION_DIR    = ${ACCESSION_DIR}"
 		echo "CATALOG          = ${CATALOG}"
 		echo "DATABASE         = ${DATABASE}"
+		echo "MOUNTED_ON       = ${MOUNTED_ON}"
 		echo "SRCDIR           = ${SRCDIR}"
+		echo "USER             = ${USER}"
+                echo "HOSTNAME         = ${HOSTNAME}"
 		echo "SCRIPTVERSION    = ${SCRIPTVERSION}"
 		echo "INGEST_HOME      = ${INGEST_HOME}"
 		echo "LOGFILE          = ${LOGFILE}"
+		echo "DATE             = $(date)"
 		# echo  SOURCE_DIR="${SOURCE_DIR}"
 		} >> ${ACCINFO}
 	}
