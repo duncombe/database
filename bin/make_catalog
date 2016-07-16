@@ -7,7 +7,7 @@
 
 export INGEST_HOME=${INGEST_HOME:-$(pwd)}
 # export SCRIPTVERSION=$(tail -n1 $INGEST_HOME/version)
-export SCRIPTVERSION=$(cd $INGEST_HOME; git describe --abbrev=3 --tags --dirty)
+export SCRIPTVERSION=$(cd $INGEST_HOME; git describe --abbrev=4 --tags --dirty)
 
 # generate a collection UUID and AMS accession
 # export COLLECTION=`uuidgen`
