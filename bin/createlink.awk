@@ -1,4 +1,25 @@
 #! /usr/bin/gawk  -f
+# 
+# The format of the WAF is changing.
+# 
+# It was
+# DATA/
+#      ACCESSION/
+#                {UUID}/
+#                       {original-data-folder}/
+#
+# We want it to become
+# DATA/
+#      ACCESSION/
+#                {UUID}/
+#                       ABOUT/
+#                       0-DATA/{original-data-folder}/
+#                       1-DATA/{modified-data-folder}/
+# 
+# So we have to make allowance for:
+#     1. an additional level of linking
+#     2. specifying what version of the data we are writing
+#            
 BEGIN{  FS="\t"
         SD=ENVIRON["LINKDIR"] 
         RRD=ENVIRON["LINKPATH"]
@@ -18,7 +39,8 @@ BEGIN{  FS="\t"
 	cmd | getline path ;  close(cmd) 
 	# work out the accession number
 	acc=$3 "=" $4 
-	accpath=acc "/" $(NF-1) "-DATA" "/" path
+	# accpath=acc "/" $(NF-1) "-DATA" "/" path
+	accpath=acc "/DATA/" $(NF-1) "-DATA" "/" path
 	cmd2="test -d \"" SD "/" accpath "\""
 	if (system(cmd2)==1){
 		cmd="mkdir -pv \"" SD "/" accpath "\""

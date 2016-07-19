@@ -17,6 +17,15 @@
 #                       0-DATA/{original-data-folder}/
 #                       1-DATA/{modified-data-folder}/
 # 
+# And now we want to change it again. We want it:
+# DATA/
+#      ACCESSION/
+#                {UUID}/
+#                       ABOUT/
+#                       DATA/
+#                            0-DATA/{original-data-folder}/
+#                            1-DATA/{modified-data-folder}/
+# 
 # So we have to make allowance for:
 #     1. an additional level of linking
 #     2. specifying what version of the data we are writing
