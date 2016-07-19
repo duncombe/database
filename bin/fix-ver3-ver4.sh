@@ -13,10 +13,12 @@ export VERSION_CONTROL=numbered
 
 # throw away the previous links dir 
 for F in $ACCESSION_DIR/[0-9][0-9][0-9]*; do 
-	mkdir $F/trash
-	mv -i $F/?-DATA $F/trash
+	mkdir -p $F/trash
+	mv $F/?-DATA $F/trash
 done
 
+# convert the URL links in ACCESSION/index.html to point to 
+# the correct directory
 TEMPFILE=$(mktemp)
 
 sed 	-e 's=ACCESSION-UUID/REVISION-DATA=ACCESSION-UUID/DATA/REVISION-DATA='\
@@ -26,7 +28,16 @@ sed 	-e 's=ACCESSION-UUID/REVISION-DATA=ACCESSION-UUID/DATA/REVISION-DATA='\
 chmod --reference=${ACCESSION_DIR}/index.html ${TEMPFILE}
 mv -b ${TEMPFILE} ${ACCESSION_DIR}/index.html
 
+# recreate the linked structure 
 $INGEST_HOME/create_linked_data $ACCESSION_DIR
+
+# now tell the log what we did
+for FOLDER in $ACCESSION_DIR/[0-9][0-9][0-9]*; do 
+	{ echo  $(date) $0 $(cd $INGEST_HOME; git describe --tags) 
+	  echo convert by shifting data versions n-DATA into DATA folder
+	  echo ------------------- 
+	} >>  $FOLDER/ABOUT/changes.log 
+done
 
 # $INGEST_HOME/create_about
 
