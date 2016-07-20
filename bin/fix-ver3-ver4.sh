@@ -34,9 +34,9 @@ $INGEST_HOME/create_linked_data $ACCESSION_DIR
 # now tell the log what we did
 for FOLDER in $ACCESSION_DIR/[0-9][0-9][0-9]*; do 
 	{ echo  $(date) $0 $(cd $INGEST_HOME; git describe --tags) 
-	  echo convert by shifting data versions n-DATA into DATA folder
+	  echo convert $(basename $FOLDER) by shifting data versions n-DATA into DATA folder
 	  echo ------------------- 
-	} >>  $FOLDER/ABOUT/changes.log 
+	} | tee -a $FOLDER/ABOUT/journal.txt >> $LOGFILE
 done
 
 # $INGEST_HOME/create_about
