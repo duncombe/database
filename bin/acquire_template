@@ -26,6 +26,7 @@ export AMSACCFILE="${AMSACCFILE:?Get the next AMS accession number from this fil
 # the source directory is defined by SOURCE_DIR
 export SOURCE_DIR="${1:?Provide the source directory as the first argument }"
 export COLLECTION_TITLE=${COLLECTION_TITLE:?Provide a title for collection (COLLECTION_TITLE)}
+export COLLECTION=${COLLECTION}
 
 # 
 # No further environmental variables to change beyond this point.
@@ -42,6 +43,9 @@ echo COLLECTION_TITLE=${COLLECTION_TITLE}
 echo Other variables that might be set: PARENT, REVISION
 echo REVISION=${REVISION:-0}
 echo PARENT=${PARENT}
+if [ "x$COLLECTION" = "x" ]; then  
+	echo COLLECTION=${COLLECTION}
+fi
 
 read -p "Environmental variables are loaded. Complete the ingest (y) or stop (N)? " RESP
 RESP=${RESP^^} 

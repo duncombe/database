@@ -45,6 +45,7 @@ export SOURCE_DIR="${1:?}"
 # Assume this is the original data submission if there is none specified
 export REVISION=${REVISION:-0}
 export COLLECTION_TITLE=${COLLECTION_TITLE:?Provide a title for collection (COLLECTION_TITLE)}
+export COLLECTION=${COLLECTION}
 
 [ -d "${SOURCE_DIR}" ] || { echo ${SOURCE_DIR} is not accessible ; exit 1 ; } 
 [ -x "${SOURCE_DIR}" ] || { echo ${SOURCE_DIR} is not searchable ; exit 2 ; } 
@@ -72,7 +73,7 @@ echo Made catalog
 
 echo Creating linked data \(may take a while\) ...
 
-${INGEST_HOME}/create_linked_data ${ACCESSION_DIR}  | tee -a ${LOGFILE}
+{ ${INGEST_HOME}/create_linked_data ${ACCESSION_DIR} || exit 6 ; } | tee -a ${LOGFILE}
 
 echo Created linked data
 

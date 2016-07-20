@@ -12,9 +12,21 @@ export SCRIPTVERSION=$(cd $INGEST_HOME; git describe --abbrev=4 --tags --dirty)
 # generate a collection UUID and AMS accession
 # export COLLECTION=`uuidgen`
 
-read AMSACC COLLECTION EXITLVL <<< $( ${INGEST_HOME}/getacc )
-if [ $EXITLVL -ne 0 ]; then exit 2 ; fi
-export AMSACC COLLECTION
+if [ "x$COLLECTION" = "x" ]; then 
+	read AMSACC COLLECTION EXITLVL <<< $( ${INGEST_HOME}/getacc )
+	if [ $EXITLVL -ne 0 ]; then exit 2 ; fi
+	export AMSACC COLLECTION
+else 
+	read amsacc collection exitlvl <<< $( grep $COLLECTION $AMSACCFILE )
+	if [ "x$amsacc" = "x" ]; then 
+	   echo "Collection UUID provided but it does not exist " \
+		"in the accessions list $AMSACCFILE"
+	   exit 3
+	else 
+	   export AMSACC=$amsacc
+	   export COLLECTION
+	fi 
+fi
 
 export SRCDIR="${1:?}"
 
