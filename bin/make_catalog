@@ -99,6 +99,7 @@ echo "${MANIFESTFORM}"
 # find "${SRCDIR}" -type f -exec bash $(pwd)/register.sh \{\} \;
 find "${SRCDIR}" -type f -exec bash ${INGEST_HOME}/register.sh \{\} \; && {
 # If we succeed, write information about what we did 
+	SOURCE_SIZE=$(du -b "${SRCDIR}")
 	ON_DEVICE=$(stat -Lc "%D" ${DATABASE})
 	ACCINFO_FILE=accessioned_as.txt
 
@@ -126,6 +127,7 @@ find "${SRCDIR}" -type f -exec bash ${INGEST_HOME}/register.sh \{\} \; && {
 		echo "INGEST_HOME      = ${INGEST_HOME}"
 		echo "LOGFILE          = ${LOGFILE}"
 		echo "DATE             = $(date)"
+		echo "SOURCE_SIZE      = ${SOURCE_SIZE} bytes"
 		# echo  SOURCE_DIR="${SOURCE_DIR}"
 		} >> ${ACCINFO}
 	}
