@@ -1,0 +1,12 @@
+
+# 
+# when we use =combinedatabase= to merge two databases, we have two copies of the elements copied. 
+# If we no longer want the elements copied to be in the original database, we need to scan the original 
+# database and eliminate data no longer required. 
+# 
+
+# run combinedatabase
+# remove the accesion links from the origin database
+# scan all accession links in the origin database
+# remove blobs in the database (.DATABASE) no longer pointed to. 
+
