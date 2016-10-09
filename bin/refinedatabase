@@ -5,8 +5,11 @@
 # database and eliminate data no longer required. 
 # 
 
-# run combinedatabase
-# remove the accesion links from the origin database
-# scan all accession links in the origin database
-# remove blobs in the database (.DATABASE) no longer pointed to. 
+# run combinedatabase 
+# 	copy in blobs
+# 	update catalogue
+# 	create accession links in destination database
+# remove the accession links from the origin database
+# 	remove blob if it is no longer in catalogue
+#
 
