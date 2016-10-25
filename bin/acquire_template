@@ -49,7 +49,7 @@ fi
 
 read -p "Environmental variables are loaded. Complete the ingest (y) or stop (N)? " RESP
 RESP=${RESP^^} 
-if [ "${RESP:0:1}" == "Y" ]; then
+if [ "${RESP:0:1}" = "Y" ]; then
 	$INGEST_HOME/ingest.sh "${SOURCE_DIR}"
 else
 	echo Abandoned processing

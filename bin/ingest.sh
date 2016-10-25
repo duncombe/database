@@ -4,6 +4,16 @@
 # register.sh
 # create_linked_data
 
+# It is sdafer to call this script from another script which tests the
+# environment variables fully. The script you should use should be based on
+# acquire_template which is in the $INGEST_HOME 
+
+if [ `ps -o stat= -p $PPID` = "Ss" ]; then 
+	read -p "It is wiser to use the acquire wrapper to run $0. Continue? (y/N) " ans
+	ans=${ans^^}
+	[ "${ans:0:1}" = "Y" ] || exit 1
+fi
+
 # We are changing the format of the WAF.
 # It was
 # DATA/
