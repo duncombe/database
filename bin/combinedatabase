@@ -52,7 +52,8 @@ unset -v CATALOG DATABASE ACCESSION_DIR
 # read from the catalog (manifest.txt file) the accessions that we want to move
 # copy the shasum files from the fromDATABASE (.DATABASE) to the toDATABASE
 # write the catalog entry to the toCATALOG
-head -n20 ${fromCATALOG} | awk -v TO=$toDATABASE -v FROM=$fromDATABASE -v CATALOG=$toCATALOG --source '
+# head -n20 ${fromCATALOG} | awk -v TO=$toDATABASE -v FROM=$fromDATABASE -v CATALOG=$toCATALOG --source '
+cat ${fromCATALOG} | awk -v TO=$toDATABASE -v FROM=$fromDATABASE -v CATALOG=$toCATALOG --source '
 	/^#/{next}
 	{ dir=substr($1,1,2)
 	  file=substr($1,3)
