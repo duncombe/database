@@ -25,8 +25,8 @@ export AMSACCFILE="${AMSACCFILE:?Get the next AMS accession number from this fil
 
 # the source directory is defined by SOURCE_DIR
 export SOURCE_DIR="${1:?Provide the source directory as the first argument }"
-export COLLECTION_TITLE=${COLLECTION_TITLE:?Provide a title for collection (COLLECTION_TITLE)}
 export COLLECTION=${COLLECTION}
+export COLLECTION_TITLE=${COLLECTION_TITLE:?Provide a title for collection (COLLECTION_TITLE)}
 
 # 
 # No further environmental variables to change beyond this point.
