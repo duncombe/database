@@ -75,7 +75,7 @@ gawk '	BEGIN{ ACCESSION=ENVIRON["ACCESSION_DIR"]
 		print HEADER > manifestfile ; HEADER=""
 		printf "%s", $0  > manifestfile
 	} ' $CATALOG
-echo Populated $ACCESSION_DIR/ABOUT
+echo Populated ${ACCESSION_DIR}/\*/ABOUT
 
 # update the ACCESSION/index.html
 TMPFILE=$(mktemp)
@@ -89,7 +89,6 @@ awk --re-interval '
 		N=i-1
 		# write the header and old entries
 		J=0 
-		
 		L=0
 		while(INDFILE[J]!~"END OF LIST MARKER"){
 			if(L==1){
@@ -101,8 +100,7 @@ awk --re-interval '
 			print INDFILE[J++]
 			}
 
-		# for(x in LIST){print LIST[x]}
-
+		# for(x in LIST){print LIST[x]} 
 		}
 
 	/^#/{next}
