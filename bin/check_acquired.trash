@@ -1,0 +1,14 @@
+
+# checks the contents of a directory againt the manifest of a data base.
+# the manifest files or catalog of the database has shasums of all files in the database.
+# chack shasums of files in the directory against the shasums in the database 
+# print file names that are not in the manifest
+
+MANIFEST=${1:?}
+FOLDER=${2:?}
+
+find $FOLDER -type f -exec ./check_file \{\} \; 
+
+
+
+

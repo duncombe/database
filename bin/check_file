@@ -1,0 +1,4 @@
+
+SHASUM=`shasum "$1" | cut -f1 -d\ `
+grep $SHASUM $MANIFEST > /dev/null || echo "$1"  
+

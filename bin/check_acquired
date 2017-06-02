@@ -1,0 +1,24 @@
+#! /bin/bash
+
+# checks the contents of a directory against the manifest of a data base.
+# the manifest files (catalog) of the database has sha-384 sums of all files in
+# the database. check the shasums of the files in the directory against the
+# shasums in the database. print file names that are not in the manifest.
+
+# must be exported to be available to the function
+export MANIFEST=${1:?Provide manifest filename}
+export FOLDER=${2:?Provide a directory to scan and check}
+
+# function calculates the checksum and greps the manifest.
+function check_file(){
+	SHASUM=`shasum -a 384 "$1" | cut -f1 -d\ `
+	grep $SHASUM $MANIFEST > /dev/null || echo "$1"  
+	}
+
+export -f check_file
+
+find $FOLDER -type f -exec bash -c 'check_file "$0"' \{\} \;
+
+
+
+
