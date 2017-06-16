@@ -2,6 +2,10 @@
 # ingest template processor 
 # defines the environmental variables that configure the ingest script 
 
+# You can source  the database variables inside this script to avoid
+# contaminating your shell, e.g., source publicdatabase.cfg
+# source database.cfg
+
 ########################################################
 # Change default data here
 # 
@@ -41,14 +45,18 @@ echo LOGFILE=${LOGFILE}
 echo ACCESSION_DIR=${ACCESSION_DIR}
 echo AMSACCFILE=${AMSACCFILE}
 echo SOURCE_DIR=${SOURCE_DIR}
-echo COLLECTION_TITLE=${COLLECTION_TITLE}
+echo COLLECTION_TITLE=\"${COLLECTION_TITLE}\"
 if [ "x$COLLECTION" != "x" ]; then  
 	echo COLLECTION=${COLLECTION}
 fi
 echo Other variables that might be set: PARENT, REVISION
 echo REVISION=${REVISION:-0}
 echo PARENT=${PARENT}
-
+echo 
+# provide some information that may influence whether to proceed
+echo "Space used in SOURCE_DIR="`du -hs ${SOURCE_DIR} | awk '{print $1}'`
+echo "Free space on ACCESSION_DIR="`df -h $ACCESSION_DIR  | tail -n1 | awk '{print $4}'`
+echo 
 read -p "Environmental variables are loaded. Complete the ingest (y) or stop (N)? " RESP
 RESP=${RESP^^} 
 if [ "${RESP:0:1}" = "Y" ]; then
