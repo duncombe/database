@@ -3,6 +3,6 @@
 # you do not want any valid user to access the folder. 
 
 AuthType Basic
-AuthName "Restricted Content"
+AuthName "Restricted Content: to access these data contact data@ocean.gov.za"
 AuthUserFile /etc/httpd/htpasswd
 Require valid-user

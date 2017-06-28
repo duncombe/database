@@ -130,7 +130,14 @@ find "${SRCDIR}" -type f -exec bash ${INGEST_HOME}/register.sh \{\} \; && {
 		echo "SOURCE_SIZE      = ${SOURCE_SIZE} bytes"
 		# echo  SOURCE_DIR="${SOURCE_DIR}"
 		} >> ${ACCINFO}
-# output a line to copy and paste into the MIMS_Metadata spreadsheet on google docs
-	echo -e "\t${AMSACC}\t\"\"\t\"\"\t\"\"\t\"\"\t${ACCESSION_DATE}=${COLLECTION}\t${COLLECTION}\t${COLLECTION_TITLE}\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t${PARENT}\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t${CATALOG}\t${SOURCE_SIZE}\t\"\"\t\"\""
+# output a line to copy and paste into the MIMS_Metadata spreadsheet on google
+# docs
+	if [ ${COLLECTION} = ${PARENT} ]; then
+		MMDPARENT=""
+	else
+		MMDPARENT=${PARENT}
+	fi
+
+	echo -e "\t${AMSACC}\t\"\"\t\"\"\t\"\"\t\"\"\t${ACCESSION_DATE}=${COLLECTION}\t${COLLECTION}\t${COLLECTION_TITLE}\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t${MMDPARENT}\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t${CATALOG}\t${SOURCE_SIZE}\t\"\"\t\"\""
 	}
 
