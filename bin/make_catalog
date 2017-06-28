@@ -101,11 +101,11 @@ find "${SRCDIR}" -type f -exec bash ${INGEST_HOME}/register.sh \{\} \; && {
 # If we succeed, write information about what we did 
 	SOURCE_SIZE=$(du -bs "${SRCDIR}" | awk '{print $1}')
 	ON_DEVICE=$(stat -Lc "%D" ${DATABASE})
-	ACCINFO_FILE=accessioned_as.txt
+	ACCINFO_FILE=accessioned_as_${AMSACC}.txt
 
 	[ -w "${SRCDIR}" ] &&
-		ACCINFO=${SRCDIR%/}/$ACCINFO_FILE ||
-		ACCINFO=./$ACCINFO_FILE
+		ACCINFO=${SRCDIR%/}/${ACCINFO_FILE} ||
+		ACCINFO=./${ACCINFO_FILE}
 
 	{
 		echo "###################"
