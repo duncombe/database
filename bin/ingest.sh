@@ -1,5 +1,7 @@
 #! /bin/bash
 
+# if false; then 
+
 # make_catalog
 # register.sh
 # create_linked_data
@@ -11,7 +13,7 @@
 if [ `ps -o stat= -p $PPID` = "Ss" ]; then 
 	read -p "It is wiser to use the acquire wrapper to run $0. Continue? (y/N) " ans
 	ans=${ans^^}
-	[ "${ans:0:1}" = "Y" ] || exit 1
+	[ "${ans:0:1}" = "Y" ] || exit 9
 fi
 
 # We are changing the format of the WAF.
@@ -92,7 +94,22 @@ echo Created linked data
 
 ${INGEST_HOME}/create_about
 
+# fi 
+
 echo Created ABOUT
+
+if [ ! -e ${ACCESSION_DIR}/.htaccess ]; then 
+	read -p "Protect accession with .htaccess file? (y/N) " ans
+	ans=${ans^^}
+	[ "${ans:0:1}" = "Y" ] && { 
+		cat <<-ENDIN > ${ACCESSION_DIR}/.htaccess
+			AuthType Basic
+			AuthName "Restricted Content: to access these data contact data@ocean.gov.za"
+			AuthUserFile /etc/httpd/htpasswd
+			Require valid-user
+		ENDIN
+		}
+fi
 
 echo Done.
 
