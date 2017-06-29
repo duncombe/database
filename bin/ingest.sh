@@ -4,7 +4,7 @@
 # register.sh
 # create_linked_data
 
-# It is sdafer to call this script from another script which tests the
+# It is safer to call this script from another script which tests the
 # environment variables fully. The script you should use should be based on
 # acquire_template which is in the $INGEST_HOME 
 
