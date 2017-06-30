@@ -111,7 +111,7 @@ if [ ! -e ${COLLECTION_DIR}/.htaccess ]; then
 	read -p "Protect accession with .htaccess file? (y/N) " ans
 	ans=${ans^^}
 	[ "${ans:0:1}" = "Y" ] && { 
-		cat <<-ENDIN > ${ACCESSION_DIR}/.htaccess
+		cat <<-ENDIN > ${COLLECTION_DIR}/.htaccess
 			AuthType Basic
 			AuthName "Restricted Content: to access these data contact data@ocean.gov.za"
 			AuthUserFile /etc/httpd/htpasswd
@@ -119,6 +119,8 @@ if [ ! -e ${COLLECTION_DIR}/.htaccess ]; then
 		ENDIN
 		}
 fi
+
+if [ -e ${ENVIRONMENT_FILE} ]; then rm ${ENVIRONMENT_FILE} ; fi 
 
 echo Done.
 
