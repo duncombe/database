@@ -80,6 +80,13 @@ function alterable(){
 alterable ${CATALOG} || exit 4
 alterable ${DATABASE} || exit 5
 
+# information is generated in make_catalog, create_linked_data, create_about
+# and friends, that we would like to have access to in the higher levels
+# scripts like this one. Create a temporary file here, export the name, and
+# write to it in the called scripts. Read back information when we need it. 
+
+export ENVIRONMENT_FILE=`mktemp` 
+
 set -o pipefail
 ${INGEST_HOME}/make_catalog "${SOURCE_DIR}" | tee -a ${LOGFILE}
 set +o pipefail
@@ -98,7 +105,9 @@ ${INGEST_HOME}/create_about
 
 echo Created ABOUT
 
-if [ ! -e ${ACCESSION_DIR}/.htaccess ]; then 
+COLLECTION_DIR=$(grep COLLECTION_DIR ${ENVIRONMENT_FILE} | sed 's/^.*COLLECTION_DIR *= //')
+
+if [ ! -e ${COLLECTION_DIR}/.htaccess ]; then 
 	read -p "Protect accession with .htaccess file? (y/N) " ans
 	ans=${ans^^}
 	[ "${ans:0:1}" = "Y" ] && { 

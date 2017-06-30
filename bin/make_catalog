@@ -5,6 +5,8 @@
 # export CATALOG=`pwd`/test-catalog1
 # export DATABASE=`pwd`/test-database1
 
+export ENVIRONMENT_FILE=${ENVIRONMENT_FILE:-$(mktemp)}
+
 export INGEST_HOME=${INGEST_HOME:-$(pwd)}
 # export SCRIPTVERSION=$(tail -n1 $INGEST_HOME/version)
 export SCRIPTVERSION=$(cd $INGEST_HOME; git describe --abbrev=4 --tags --dirty)
@@ -42,6 +44,8 @@ SRCDIR="${SRCDIR%/}/"
 # MIMS ACCESSION_DATE here is a date-time string
 export ACCESSION_DATE=`date -u +"%Y%m%dT%H%M"`
 
+export COLLECTION_DIR=${ACCESSION_DIR%/}/${ACCESSION_DATE}+${COLLECTION}
+
 # if the submission has a PARENT use that identifier
 # otherwise the submission is the parent and the identifiers are the same
 export PARENT=${PARENT:-$COLLECTION}
@@ -66,6 +70,7 @@ echo "CATALOG        = ${CATALOG}"
 echo "DATABASE       = ${DATABASE}"
 echo "COLLECTION     = ${COLLECTION}"
 echo "ACCESSION_DATE = ${ACCESSION_DATE}"
+echo "COLLECTION_DIR = ${COLLECTION_DIR}"
 echo "PARENT         = ${PARENT}"
 echo "REVISION       = ${REVISION}"
 
@@ -118,6 +123,7 @@ find "${SRCDIR}" -type f -exec bash ${INGEST_HOME}/register.sh \{\} \; && {
 		echo "PARENT           = ${PARENT}"
 		echo "REVISION         = ${REVISION}"
 		echo "ACCESSION_DIR    = ${ACCESSION_DIR}"
+		echo "COLLECTION_DIR   = ${COLLECTION_DIR}"
 		echo "CATALOG          = ${CATALOG}"
 		echo "DATABASE         = ${DATABASE}"
 		echo "USER             = ${USER}"
@@ -129,7 +135,7 @@ find "${SRCDIR}" -type f -exec bash ${INGEST_HOME}/register.sh \{\} \; && {
 		echo "DATE             = $(date)"
 		echo "SOURCE_SIZE      = ${SOURCE_SIZE} bytes"
 		# echo  SOURCE_DIR="${SOURCE_DIR}"
-		} >> ${ACCINFO}
+		} | tee -a ${ENVIRONMENT_FILE} >> ${ACCINFO}
 # output a line to copy and paste into the MIMS_Metadata spreadsheet on google
 # docs
 	if [ ${COLLECTION} = ${PARENT} ]; then
