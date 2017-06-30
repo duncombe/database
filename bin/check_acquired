@@ -5,20 +5,17 @@
 # the database. check the shasums of the files in the directory against the
 # shasums in the database. print file names that are not in the manifest.
 
-# must be exported to be available to the function
+# anv vars must be exported to be available to the function
 export MANIFEST=${1:?Provide manifest filename}
 export FOLDER=${2:?Provide a directory to scan and check}
 
 # function calculates the checksum and greps the manifest.
 function check_file(){
 	SHASUM=`shasum -a 384 "$1" | cut -f1 -d\ `
-	grep $SHASUM $MANIFEST > /dev/null || echo "$1"  
+	grep $SHASUM $MANIFEST > /dev/null && echo Found $1 || echo "$1"  
 	}
 
 export -f check_file
 
-find $FOLDER -type f -exec bash -c 'check_file "$0"' \{\} \;
-
-
-
+find $FOLDER -type f -exec bash -c 'check_file "$0"' \{\} \;  
 
