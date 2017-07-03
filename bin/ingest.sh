@@ -117,6 +117,7 @@ if [ ! -e ${COLLECTION_DIR}/.htaccess ]; then
 			AuthUserFile /etc/httpd/htpasswd
 			Require valid-user
 		ENDIN
+		echo  .htaccess file written in ${COLLECTION_DIR}
 		}
 fi
 
