@@ -41,7 +41,7 @@ for f in $FILE1 $FILE2; do
 	else
 		grep -v "^#" $FIRST > $f
 	fi
-	echo $FIRST
+	# echo $FIRST
 	FIRST=$SECOND
 done
 
