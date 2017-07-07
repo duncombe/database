@@ -108,7 +108,7 @@ echo Created ABOUT
 # retrieve a bunch of variables
 COLLECTION_DIR=$(grep COLLECTION_DIR ${ENVIRONMENT_FILE} | sed 's/^.*COLLECTION_DIR *= //')
 ACCESSION_DIR=$(grep ACCESSION_DIR ${ENVIRONMENT_FILE} | sed 's/^.*ACCESSION_DIR *= //')
-AMSACC=$(grep AMSACC ${ENVIRONMENT_FILE} | sed 's/^.*AMSACC *= //')
+AMSACC=$(grep "^AMSACC\>" ${ENVIRONMENT_FILE} | sed 's/^.*AMSACC *= //')
 
 # provide some privacy. users will ask to have this lifted, by default put it in.
 if [ ! -e ${COLLECTION_DIR}/.htaccess ]; then 
