@@ -121,7 +121,10 @@ if [ ! -e ${COLLECTION_DIR}/.htaccess ]; then
 		}
 fi
 
-if [ -e ${ENVIRONMENT_FILE} ]; then rm ${ENVIRONMENT_FILE} ; fi 
+if [ -e ${ENVIRONMENT_FILE} ]; then 
+	cat ${ENVIRONMENT_FILE} >> COLLECTION_DIR}/ABOUT/accessioned_as.txt
+	rm ${ENVIRONMENT_FILE}
+fi 
 
 echo Done.
 
