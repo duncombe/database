@@ -1,0 +1,13 @@
+
+# make a link to the full accession dir from the ams accession number
+
+ACCFILE=${2:-/DATA/amsaccession}
+DIR=${1:?} 
+f=$(basename $DIR)
+d=$(dirname $DIR)
+F=${f#*=}
+A=$(grep $F $ACCFILE | cut -f1)
+
+echo $f
+[ -e $d/$A ] && echo $A exists || ln -s $DIR $d/$A 
+

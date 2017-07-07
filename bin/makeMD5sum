@@ -6,9 +6,10 @@ function make_sumfile(){
 	# check for a directory, to avoid mistakes
 	if [ -d "$1" ]; then 
 		pushd "$1" > /dev/null
-		[ -e MD5SUM ] ||
-			find . -type f -print0 |
+		[ -e MD5SUM ] && echo "$1/MD5SUM exists"  ||
+			{ find . -type f -print0  |
 				xargs -0 md5sum | grep -v "  \./MD5SUM" > MD5SUM
+			  echo "Created $1/MD5SUM" ; }
 		popd > /dev/null
 	fi
         }
