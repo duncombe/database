@@ -12,8 +12,8 @@
 
 INGEST_HOME=${INGEST_HOME:-/home/duncombe/WORK/DEA/database/bin}
 
-frombase=${1}
-tobase=${2}
+frombase=${1:?}
+tobase=${2:?}
 
 if [ -f "$frombase" ]; then
 	from=$frombase
