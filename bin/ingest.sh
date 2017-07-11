@@ -134,6 +134,16 @@ if [ -e ${ENVIRONMENT_FILE} ]; then
 	rm ${ENVIRONMENT_FILE}
 fi 
 
+# We've been keeping a git repo of accession dirs. The repo has somehow missed
+# being accessioned.  Test if a repo exists, then warn.
+
+( cd ${ACCESSION_DIR}
+  if [ ! -z "$(git status --porcelain)" ]; then 
+    # Uncommitted changes
+    echo $ACCESSION_DIR is unclean. The git repo needs to be updated. 
+  fi
+)
+
 echo Done.
 
 # vi: se nowrap tw=0 :
