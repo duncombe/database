@@ -6,13 +6,19 @@
 # shasums in the database. print file names that are not in the manifest.
 
 # anv vars must be exported to be available to the function
+# possible useful manifest locations are: 
+# /DATA/LOCALWEB/DATA/manifest.txt
+# /DATA/LOCALWEB/Library/manifest.txt
+# /DATA/PRIVATEDATA/pub/manifest.txt
+# /DATA/PUBLICDATA/pub/manifest.txt
+
 export MANIFEST=${1:?Provide manifest filename}
 export FOLDER=${2:?Provide a directory to scan and check}
 
 # function calculates the checksum and greps the manifest.
 function check_file(){
 	SHASUM=`shasum -a 384 "$1" | cut -f1 -d\ `
-	grep $SHASUM $MANIFEST > /dev/null && echo Found $1 || echo "$1"  
+	grep $SHASUM $MANIFEST > /dev/null && echo Found $1 in manifest || echo "$1"  
 	}
 
 export -f check_file

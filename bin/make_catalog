@@ -144,6 +144,7 @@ find "${SRCDIR}" -type f -exec bash ${INGEST_HOME}/register.sh \{\} \; && {
 		MMDPARENT=${PARENT}
 	fi
 
-	echo -e "\t${AMSACC}\t\"\"\t\"\"\t\"\"\t\"\"\t${ACCESSION_DATE}=${COLLECTION}\t${COLLECTION}\t${COLLECTION_TITLE}\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t${MMDPARENT}\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t${CATALOG}\t${SOURCE_SIZE}\t\"\"\t\"\""
+	echo -e "\t${AMSACC}\t\"\"\t\"\"\t\"\"\t\"\"\t${ACCESSION_DATE}=${COLLECTION}\t${COLLECTION}\t${COLLECTION_TITLE}\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"${MMDPARENT}\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t${CATALOG}\t${SOURCE_SIZE}\t\"\"\t\"\""
 	}
 
+# vi: se nowrap tw=0 : 
