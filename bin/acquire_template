@@ -67,6 +67,9 @@ echo
 echo "Space used in SOURCE_DIR="`du -hs "${SOURCE_DIR}" | awk '{print $1}'`
 echo "Free space on ACCESSION_DIR="`df -h $ACCESSION_DIR  | tail -n1 | awk '{print $4}'`
 echo 
+echo Testing checksums: 
+${INGEST_HOME}/test_checksums "${SOURCE_DIR}"
+echo 
 read -p "Environmental variables are loaded. Complete the ingest (y) or stop (N)? " RESP
 RESP=${RESP^^} 
 if [ "${RESP:0:1}" = "Y" ]; then

@@ -1,0 +1,11 @@
+NOTFOUND=false
+if getopts ":r" TRASH ; then NOTFOUND=true; fi
+
+
+for f in `find . -maxdepth 1 \( -type d -o -type l \) -print`; do
+	if $NOTFOUND; then 
+		[ -e $f/accession* ] || echo $f 
+	else
+		[ -e $f/accession* ] && echo $f 
+	fi
+done

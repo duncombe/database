@@ -110,7 +110,9 @@ COLLECTION_DIR=$(grep COLLECTION_DIR ${ENVIRONMENT_FILE} | sed 's/^.*COLLECTION_
 ACCESSION_DIR=$(grep ACCESSION_DIR ${ENVIRONMENT_FILE} | sed 's/^.*ACCESSION_DIR *= //')
 AMSACC=$(grep "^AMSACC\>" ${ENVIRONMENT_FILE} | sed 's/^.*AMSACC *= //')
 
-# provide some privacy. users will ask to have this lifted, by default put it in.
+# provide some privacy. users will ask to have this lifted, by default put it
+# in. This code should be moved earlier, to when the accession directory is
+# created. 
 if [ ! -e ${COLLECTION_DIR}/.htaccess ]; then 
 	read -p "Protect accession with .htaccess file? (y/N) " ans
 	ans=${ans^^}
