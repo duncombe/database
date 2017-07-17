@@ -1,0 +1,22 @@
+#! /bin/bash
+# uses find to ascend a tree creating an MD5SUM file for each directory encountered
+# if one does not exist already
+
+function make_sumfile(){
+	# check for a directory, to avoid mistakes
+	if [ -d "$1" ]; then 
+		pushd "$1" > /dev/null
+		[ -e MD5SUM ] && echo "$1/MD5SUM exists"  ||
+			{ find . -type f -print0  |
+				xargs -0 md5sum | grep -v "  \./MD5SUM" > MD5SUM
+			  echo "Created $1/MD5SUM" ; }
+		popd > /dev/null
+	fi
+        }
+
+export -f make_sumfile
+
+find $1 -depth -type d -exec bash -c 'make_sumfile "$0"' \{\} \;
+
+# vi:se nowrap tw=0 :
+

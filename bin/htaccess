@@ -1,0 +1,8 @@
+# template htaccess file. copy it to .htaccess in the folder you wish to
+# protect and change valid-user to "user <username>" in the htpasswd file if
+# you do not want any valid user to access the folder. 
+
+AuthType Basic
+AuthName "Restricted Content: to access these data contact data@ocean.gov.za"
+AuthUserFile /etc/httpd/htpasswd
+Require valid-user

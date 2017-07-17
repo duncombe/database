@@ -1,0 +1,55 @@
+#! /bin/bash
+# checks a manifest list against a shasum-384 file or v.v.  
+# To use it you must create a file of shasums for the directory structure 
+# you want to test against the manifest. 
+
+function printhelp(){
+	cat <<-ENDIN
+		Usage: $0 [-r] [-h] <FILE1> <FILE2>
+		checks shasums in the two files, reporting files in FILE2 not in FILE1
+		-r reverses the order of the comparison, reporting files in FILE1 not in FILE2
+		-h prints this help text
+		ENDIN
+	}
+
+# read in the arguments and determine if we want to switch the order
+REVERSE=false
+while getopts ":rh" ARG ; do
+	case $ARG in
+	r) REVERSE=true ;;
+	h) printhelp; exit	   ;;
+	esac
+done
+shift $((OPTIND-1))
+
+if [ $# -ne 2 ]; then printhelp >&2; exit 1; fi 
+if [ ! -f $1 ]; then echo $1 not found; printhelp >&2; exit 2; fi 
+if [ ! -f $2 ]; then echo $2 not found; printhelp >&2; exit 3; fi 
+
+
+$REVERSE && { FIRST=$2; SECOND=$1; } || { FIRST=$1; SECOND=$2; }
+
+# generate some temporary files
+FILE1=$(mktemp)
+FILE2=$(mktemp)
+
+# populate the temporary files so they are both tab delimited, reading them
+# into the temporary files in the order we want to test them. 
+for f in $FILE1 $FILE2; do 
+	if [ "$( head -n 1 $FIRST | grep "^#" )x" = "x" ]; then 
+		 sed 's/  /	/' $FIRST > $f 
+	else
+		grep -v "^#" $FIRST > $f
+	fi
+	# echo $FIRST
+	FIRST=$SECOND
+done
+
+# this is the part that does the testing of the two files
+gawk -v FILE1=$FILE1 --source 'BEGIN{ FS="\t"
+					while(getline < FILE1){SHA1[$1]=$NF}
+					}
+				!($1 in SHA1){print $NF}
+				' $FILE2
+
+rm $FILE1 $FILE2

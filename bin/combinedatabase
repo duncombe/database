@@ -1,25 +1,29 @@
 #!/bin/bash
 #
-# combine two databases. copy the first into the second. 
+# Combine two databases. Copy the first into the second. 
+# Note this copies the whole of the first database into the second.
+# To move individual collections from one database to another, seek another 
+# solution.
 
 # echo Usage: $0 <from> <to> 
 
-# either use a definebase file to populate the variables, 
+# either use a database.cfg file to populate the variables, 
 # or import them from the calling shell
 
 INGEST_HOME=${INGEST_HOME:-/home/duncombe/WORK/DEA/database/bin}
 
-frombase=${1}
-tobase=${2}
+frombase=${1:?}
+tobase=${2:?}
 
 if [ -f "$frombase" ]; then
 	from=$frombase
 elif [ -d "$frombase" ]; then
-	from=$frombase/definebase 
+	from=$frombase/database.cfg 
 fi
 
 unset -v CATALOG DATABASE ACCESSION_DIR 
 source $from
+
 # ~/WORK/DEA/database/INGEST/tmp1/manifest.txt
 export fromCATALOG=${fromCATALOG:-$CATALOG} 
 # ~/WORK/DEA/database/INGEST/tmp1/.DATABASE
@@ -30,7 +34,7 @@ export fromACCESSION_DIR=${fromACCESSION_DIR:-$ACCESSION_DIR}
 if [ -f "$tobase" ]; then
 	to=$tobase
 elif [ -d "$tobase" ]; then
-	to=$tobase/definebase 
+	to=$tobase/database.cfg 
 fi
 
 unset -v CATALOG DATABASE ACCESSION_DIR 
@@ -48,7 +52,8 @@ unset -v CATALOG DATABASE ACCESSION_DIR
 # read from the catalog (manifest.txt file) the accessions that we want to move
 # copy the shasum files from the fromDATABASE (.DATABASE) to the toDATABASE
 # write the catalog entry to the toCATALOG
-head -n20 ${fromCATALOG} | awk -v TO=$toDATABASE -v FROM=$fromDATABASE -v CATALOG=$toCATALOG --source '
+# head -n20 ${fromCATALOG} | awk -v TO=$toDATABASE -v FROM=$fromDATABASE -v CATALOG=$toCATALOG --source '
+cat ${fromCATALOG} | awk -v TO=$toDATABASE -v FROM=$fromDATABASE -v CATALOG=$toCATALOG --source '
 	/^#/{next}
 	{ dir=substr($1,1,2)
 	  file=substr($1,3)
