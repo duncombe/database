@@ -40,17 +40,18 @@ DATABASE=${DATABASE%/}
 
 # optional second argument is a grep pattern defining the catalog entries we
 # are linking. Default is to link everything. 
-ACCID=${2:-.}
+REGEX=${2:-.}
 
 function relpath() { 
   python -c "import os,sys;print(os.path.relpath(*(sys.argv[1:])))" "$@";
 }
 
 # include the option to only link some of the entries (because we are modifying
-# an existing database where links for most entries in the catalog are already made. 
+# an existing database where links for most entries in the catalog are already
+# made. 
 
 export LINKPATH=$(relpath $DATABASE $LINKDIR) 
-cat $CATALOG | grep "$ACCID" | awk -f ${INGEST_HOME}/createlink.awk
+cat $CATALOG | egrep "$REGEX" | awk -f ${INGEST_HOME}/createlink.awk
 
 # 
 # We have split out the awk script from the shell script
