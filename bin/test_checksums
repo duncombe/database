@@ -1,0 +1,16 @@
+
+cd ${1:?Specify a directory to check for MD5SUM}
+
+if [ -e MD5SUM ]; then 
+	md5sum --status -c MD5SUM || { 
+		echo MD5SUM file exists, but one or more files failed checksum
+		exit
+		}
+else
+	echo There appears to be no MD5SUM for this SIP. 
+	read -p "Is this correct? (y/N) " ANS
+	ANS=${ANS^^}
+	[ "${ANS:0:1}" = "Y" ] || exit
+fi
+
+echo MD5SUM file found and checks OK
