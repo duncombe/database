@@ -15,7 +15,7 @@ Metadata as txt, XML, or JSON files may or may not be present.
 In ISO-14721 terminology, this suite is termed a **Submission Information Package** (SIP).
 2. The SIP is assigned an **accession number**.
    1. The accession number is proposed to be of the form YYYYMMDDTHHMM=UUID, with the first thirteen digits indicating the date and time that the dataset was ingested 
-into the system, an `=`-sign as separator, and the following digits, a universally unique identifier (UUID). 
+into the system, an `=`-sign as separator, and the following digits are a universally unique identifier (UUID). 
 1. The UUID (accession number) and accession-level metadata are stored in an **accession information table**, ultimately as a SQL database,
 initially in a TSV manifest. For the sake of redundancy and guarding against database corruption, the TSV manifest will be maintained. 
 1. The SIP directory structure is read. 
@@ -24,7 +24,7 @@ initially in a TSV manifest. For the sake of redundancy and guarding against dat
 the file inserted into a database structure, `${DATABASE}/` such that the path name of each file can be reduced to the SHASUM, 
 e.g., a file with SHASUM-384 of 
 `38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b`
-would be stored as   
+would be stored in the location    
 `${DATABASE}/38/b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b`. 
 1. The SHASUMs and original pathnames are recorded in the manifest as children of the accession ID.
 1. The TSV manifest is committed to a git repository.
@@ -43,26 +43,44 @@ See instructions in INGEST/ directory
 
 ## Database Structure
 
-The database structure is proposed to look like this:
+
+The database structure as proposed is outlined below. A large proportion of
+this structure has not yet ben implemented, or has been implemented in a
+half-assed fashion, e.g., there is presently a missing level (DATA) in the
+directory tree which must still be corrected, and ARCHIVE is not populated as
+proposed. 
 
 ```
 DATA/
 |- INGEST/
 |  |- YYYYMMDD-UUID/
-|  |  |- My special data set/
-|  |     |- Bunch of directories with stupid names/
-|  |     |- More stupidly named directories/
-|  |        |- Worse - named-file'_s with bad! punctuation & spelling
-|  |        |- A file with data in 
-|  |        |- A file with no data in
+|  |  |- ABOUT
+|  |  |- DATA
+|  |     |- 0-DATA
+|  |     |  |- My special data set/
+|  |     |     |- Bunch of directories with stupid names/
+|  |     |     |- More stupidly named directories/
+|  |     |        |- Worse - named-file'_s with bad! punctuation & spelling
+|  |     |        |- A file with data in 
+|  |     |        |- A file with no data in
+|  |     |- 1-DATA
+|  |        |- My_special_data_set/
+|  |           |- Bunch_of_directories_with_stupid_names/
+|  |           |- More_stupidly_named_directories/
+|  |              |- Worse_-_named-file__s_with_bad__punctuation___spelling
+|  |              |- A_file_with_data_in 
+|  |              |- A_file_with_no_data_in
 |  |  
 |  |- yyyymmdd-uuid/
-|  |  |- Cruise 321/
-|  |     |- CTD/
-|  |     |- XBT/
-|  |     |- Chlorophyll/
-|  |        |- chladata.dat
-|  |        |- chladata.xls
+|  |  |- ABOUT
+|  |  |- DATA
+|  |     |- 0-DATA
+|  |        |- Cruise 321/
+|  |           |- CTD/
+|  |           |- XBT/
+|  |           |- Chlorophyll/
+|  |           |  |- chladata.dat
+|  |           |- chladata.xls
 |  | 
 |  |- 20150825T1254=3f9b441f-1e05-48e8-9d73-90dbd9123a0a
 |  
@@ -95,21 +113,26 @@ DATA/
 |
 |- PUBLICDATA           # folder presented to clients; links from here point to the SHASUM database
 |  |- YYYYMMDDTHHMM=UUID/
-|  |  |- My special data set/
-|  |     |- Bunch of directories with stupid names/
-|  |     |- More stupidly named directories/
-|  |        |- Worse - named-file'_s with bad! punctuation & spelling -> DATA/DATABASE/00/0001f0128...12ff
-|  |        |- A file with data in -> DATA/DATABASE/6e/315526e9ec5d349196538bf01b00ec6d740d045cbd66...5771
-|  |        |- A file with no data in -> DATA/DATABASE/38/b060a751ac96384cd9327eb1b1e36a21fdb71114b...b95b
+|  |  |- ABOUT
+|  |  |- 0-DATA
+|  |     |- My special data set/
+|  |        |- Bunch of directories with stupid names/
+|  |        |- More stupidly named directories/
+|  |           |- Worse - named-file'_s with bad! punctuation & spelling -> DATA/DATABASE/00/0001f0128...12ff
+|  |           |- A file with data in -> DATA/DATABASE/6e/315526e9ec5d349196538bf01b00ec6d740d045cbd66...5771
+|  |           |- A file with no data in -> DATA/DATABASE/38/b060a751ac96384cd9327eb1b1e36a21fdb71114b...b95b
 |  |  
 |  |- yyyymmddThhmm=uuid/
-|  |  |- Cruise 321/
-|  |     |- CTD/
-|  |     |- XBT/
-|  |     |- Chlorophyll/
-|  |        |- chladata.dat -> DATA/DATABASE/2d/91bec7158d942b3c7ed26a0b627f55d00ee8e0c0921283884d07...10a6
-|  |        |- chladata.xls -> DATA/DATABASE/13/20013e3d0ad7728eb4cad4e6612fbada62761530b5387cbaf322...4686
-|  |
+|  |  |- ABOUT
+|  |  |- DATA
+|  |     |- 0-DATA
+|  |        |- Cruise 321/
+|  |           |- CTD/
+|  |           |- XBT/
+|  |           |- Chlorophyll/
+|  |              |- chladata.dat -> DATA/DATABASE/2d/91bec7158d942b3c7ed26a0b627f55d00ee8e0c0921283884d07...10a6
+|  |              |- chladata.xls -> DATA/DATABASE/13/20013e3d0ad7728eb4cad4e6612fbada62761530b5387cbaf322...4686
+|  |   
 |  |- 20150825T1254=3f9b441f-1e05-48e8-9d73-90dbd9123a0a
 .
 .
