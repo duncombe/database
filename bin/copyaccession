@@ -135,6 +135,7 @@ cat ${fromCATALOG} |
 
 export CATALOG=$toCATALOG
 export DATABASE=$toDATABASE
+export INDEXFILE=$toACCESSION_DIR/index.html
 
 # we may end up combining large data catalogs. We DO NOT want to be checking 
 # existing links for the entire new catalog. Instead grep only for identifiers 
@@ -162,7 +163,7 @@ cp -ai ${fromACCESSION_DIR}/${MIMSACC}/ABOUT ${COLLECTION_DIR}
 
 ln -s $(basename ${COLLECTION_DIR}) ${toACCESSION_DIR}/${AMSACC} 
 
-
+$INGEST_HOME/update_index_file
 
 
 
