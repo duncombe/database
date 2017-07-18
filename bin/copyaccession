@@ -45,6 +45,12 @@ export fromDATABASE=${fromDATABASE:-$DATABASE}
 # ~/WORK/DEA/database/INGEST/tmp1/ACCESSION
 export fromACCESSION_DIR=${fromACCESSION_DIR:-$ACCESSION_DIR}
 
+# we're all about the accession we are copying from. Let's find the information 
+# we need later while we are here. 
+
+read MIMSACC AMSACC < <(cat $fromCATALOG  |
+	gawk 'BEGIN{FS="\t"}$4~/'${collection}'/{print $3 "=" $4, $6}' | uniq )
+
 if [ -f "$tobase" ]; then
 	to=$tobase
 elif [ -d "$tobase" ]; then
@@ -139,14 +145,28 @@ export DATABASE=$toDATABASE
 # The 2nd argument passed to create_linked_data is a regex! 
 # Make sure it picks the right part of what is needed to be found. If we just
 # grep for the COLLECTION we may snag lines that refer to the collection as
-# parent so we only want the 4th column in the manufest and we must be explicit
+# parent so we only want the 4th column in the manifest and we must be explicit
 # in trapping it. 
 # for COLLECTION in `grep -v "^#" $fromCATALOG  | cut -d\	 -f4 | uniq`; do 
 
 	$INGEST_HOME/create_linked_data ${toACCESSION_DIR} \
-	'^[[:xdigit:]]{96}	[[:xdigit:]]{8}-([[:xdigit:]]{4}-){3}[[:xdigit:]]{12}	[[:digit:]]{8}T[[:digit:]]{4}	'${COLLECTION}'	'
+	'^[[:xdigit:]]{96}	[[:xdigit:]]{8}-([[:xdigit:]]{4}-){3}[[:xdigit:]]{12}	[[:digit:]]{8}T[[:digit:]]{4}	'${collection}'	'
 
 # done
+
+# still need to copy the ABOUT contents and link the AMS accession.
+# depend on code from the ingest script and modify appropriately.
+COLLECTION_DIR=${toACCESSION_DIR}/${MIMSACC} 
+
+cp -ai ${fromACCESSION_DIR}/${MIMSACC}/ABOUT ${COLLECTION_DIR}
+
+ln -s $(basename ${COLLECTION_DIR}) ${toACCESSION_DIR}/${AMSACC} 
+
+
+
+
+
+
 
 #
 # vi: se tw=0 :

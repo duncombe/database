@@ -6,11 +6,12 @@ if [ -e MD5SUM ]; then
 		echo MD5SUM file exists, but one or more files failed checksum
 		exit
 		}
+	echo "MD5SUM file found and checks OK"	
 else
 	echo There appears to be no MD5SUM for this SIP. 
 	read -p "Is this correct? (y/N) " ANS
 	ANS=${ANS^^}
 	[ "${ANS:0:1}" = "Y" ] || exit
+	echo There is no checksum file. Ignoring it. 
 fi
 
-echo MD5SUM file found and checks OK
