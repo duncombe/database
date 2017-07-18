@@ -54,7 +54,9 @@ else
 		<!-- <li> <a href="ACCESSION-UUID/REVISION-DATA">AMSACC</a> &nbsp; <a href="ACCESSION-UUID">TITLE</a></li> -->
 		<!-- END OF LIST MARKER -->
 		</ul>
-		
+         	<p><br>
+                <a href="http://data.ocean.gov.za">MIMS Home</a>
+                <p><br> 
 		</body>
 		</html> 
 	ENDIN
