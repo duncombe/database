@@ -109,6 +109,7 @@ echo Created ABOUT
 COLLECTION_DIR=$(grep COLLECTION_DIR ${ENVIRONMENT_FILE} | sed 's/^.*COLLECTION_DIR *= //')
 ACCESSION_DIR=$(grep ACCESSION_DIR ${ENVIRONMENT_FILE} | sed 's/^.*ACCESSION_DIR *= //')
 AMSACC=$(grep "^AMSACC\>" ${ENVIRONMENT_FILE} | sed 's/^.*AMSACC *= //')
+MIMSACC=$(basename ${COLLECTION_DIR})
 
 # provide some privacy. users will ask to have this lifted, by default put it
 # in. This code should be moved earlier, to when the accession directory is
@@ -143,6 +144,12 @@ fi
   if [ ! -z "$(git status --porcelain)" ]; then 
     # Uncommitted changes
     echo $ACCESSION_DIR is unclean. The git repo needs to be updated. 
+    read -p "Do it (y) or leave it (N)? " ANS
+    ANS=${ANS^^}
+    [ "${ans:0:1}" = "Y" ] && { 
+	git add index.html $AMSACC $MIMSACC 
+	git commit -m "Accessioned $AMSACC"
+	} 
   fi
 )
 
