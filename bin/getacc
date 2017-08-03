@@ -19,6 +19,11 @@ fi
 AMSACCFILE=${AMSACCFILE:-/DATA/amsaccession}
 if [ ! -e $AMSACCFILE ]; then touch $AMSACCFILE; fi
 
+if [ ! -w $AMSACCFILE ]; then 
+	echo Cannot update accession database. 
+	exit 99
+fi
+
 TMPFILE=`mktemp`
 (	flock 9
         # if the accession file is empty ie brand new then echo a line

@@ -49,6 +49,7 @@ fi
 # set the base directory for the ingest code
 INGEST_HOME=${INGEST_HOME:?Set environment variable INGEST_HOME}
 
+export HTACCESS=${HTACCESS:-false}
 export CATALOG=${CATALOG:-"/DATA/PUBLICDATA/pub/manifest.txt"}
 export DATABASE=${DATABASE:-"/DATA/PUBLICDATA/pub/.DATABASE"}
 export LOGFILE=${LOGFILE:-"/DATA/PUBLICDATA/pub/ingest.log"}
@@ -115,9 +116,7 @@ MIMSACC=$(basename ${COLLECTION_DIR})
 # in. This code should be moved earlier, to when the accession directory is
 # created. 
 if [ ! -e ${COLLECTION_DIR}/.htaccess ]; then 
-	read -p "Protect accession with .htaccess file? (y/N) " ans
-	ans=${ans^^}
-	[ "${ans:0:1}" = "Y" ] && { 
+	    if $HTACCESS ; then 
 		cat <<-ENDIN > ${COLLECTION_DIR}/.htaccess
 			AuthType Basic
 			AuthName "Restricted Content: to access these data contact data@ocean.gov.za"
@@ -125,7 +124,7 @@ if [ ! -e ${COLLECTION_DIR}/.htaccess ]; then
 			Require valid-user
 		ENDIN
 		echo  .htaccess file written in ${COLLECTION_DIR}
-		}
+	    fi
 fi
 
 # make an easy link to the accession dir 
@@ -146,9 +145,9 @@ fi
     echo $ACCESSION_DIR is unclean. The git repo needs to be updated. 
     read -p "Do it (y) or leave it (N)? " ANS
     ANS=${ANS^^}
-    [ "${ans:0:1}" = "Y" ] && { 
+    [ "${ANS:0:1}" = "Y" ] && { 
 	git add index.html $AMSACC $MIMSACC 
-	git commit -m "Accessioned $AMSACC"
+	git commit -m "Accessioned $AMSACC" | head -n2
 	} 
   fi
 )
