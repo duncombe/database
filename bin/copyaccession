@@ -11,6 +11,13 @@
 export INGEST_HOME=${INGEST_HOME:-$(dirname $0)}
 export SCRIPTVERSION=$(cd $INGEST_HOME; git describe --abbrev=4 --tags --dirty)
 
+function printhelp(){
+	echo "Usage: $0 <collection> <from_database> <to_database>"
+	exit
+}
+
+[ $# -ne 3 ] && printhelp
+
 collection=${1:?Collection/accession not specified}
 frombase=${2:?From database not specified}
 tobase=${3:?To database not specified}
