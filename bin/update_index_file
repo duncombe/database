@@ -2,6 +2,7 @@
 
 INDEXFILE=${INDEXFILE:?INDEXFILE should have been exported}
 CATALOG=${CATALOG:?CATALOG should have been exported}
+COLLECTION_TITLE="${COLLECTION_TITLE:?COLLECTION_TITLE should have been exported}"
 
 TMPFILE=$(mktemp)
 awk --re-interval '
