@@ -11,12 +11,14 @@ function make_sumfile(){
 				xargs -0 md5sum | grep -v "  \./MD5SUM" > MD5SUM
 			  echo "Created $1/MD5SUM" ; }
 		popd > /dev/null
+	else 
+		echo "$1" is not a directory
 	fi
         }
 
 export -f make_sumfile
 
-find $1 -depth -type d -exec bash -c 'make_sumfile "$0"' \{\} \;
+find "$1" -depth -type d -exec bash -c 'make_sumfile "$0"' \{\} \;
 
 # vi:se nowrap tw=0 :
 
