@@ -34,6 +34,8 @@ if [ -f "$frombase" ]; then
 	from=$frombase
 elif [ -d "$frombase" ]; then
 	from=$frombase/database.cfg 
+else
+	echo from database $frombase not recognised
 fi
 
 unset -v CATALOG DATABASE ACCESSION_DIR 
