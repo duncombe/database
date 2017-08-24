@@ -18,7 +18,8 @@ export FOLDER=${2:?Provide a directory to scan and check}
 # function calculates the checksum and greps the manifest.
 function check_file(){
 	SHASUM=`shasum -a 384 "$1" | cut -f1 -d\ `
-	grep $SHASUM $MANIFEST > /dev/null && echo Found $1 in manifest || echo "$1"  
+	grep $SHASUM $MANIFEST > /dev/null &&
+		echo Found $1 in manifest || echo "$1"  
 	}
 
 export -f check_file
