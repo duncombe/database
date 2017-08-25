@@ -1,6 +1,0 @@
-COLLECTION=25bb0a39-2820-4bd8-88b6-79492baef47a
-echo $DATABASE
-echo $CATALOG
-
-$INGEST_HOME/create_linked_data ${ACCESSION_DIR} \
-	'^[[:xdigit:]]{96}	[[:xdigit:]]{8}-([[:xdigit:]]{4}-){3}[[:xdigit:]]{12}	[[:digit:]]{8}T[[:digit:]]{4}	'${COLLECTION}'	'
