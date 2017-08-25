@@ -10,7 +10,7 @@
 # either use a database.cfg file to populate the variables, 
 # or import them from the calling shell
 
-INGEST_HOME=${INGEST_HOME:-/home/duncombe/WORK/DEA/database/bin}
+INGEST_HOME=${INGEST_HOME:-$(dirname $0)}
 
 frombase=${1:?}
 tobase=${2:?}

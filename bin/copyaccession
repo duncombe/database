@@ -1,0 +1,191 @@
+#!/bin/bash
+#
+# Copy the accession described by first argument (collection UUID) and second
+# argument (database.cfg) into the database described by third argument
+# (database.cfg). 
+# 
+# This is the other solution referred to in the commnets in combinedatabase.
+
+# echo Usage: $0 <collection-uuid> <from-databse.cfg> <to-database.cfg> 
+
+export INGEST_HOME=${INGEST_HOME:-$(dirname $0)}
+export SCRIPTVERSION=$(cd $INGEST_HOME; git describe --abbrev=4 --tags --dirty)
+
+function printhelp(){
+	echo "Usage: $0 <collection> <from_database> <to_database>"
+	exit
+}
+
+[ $# -ne 3 ] && printhelp
+
+collection=${1:?Collection/accession not specified}
+frombase=${2:?From database not specified}
+tobase=${3:?To database not specified}
+
+# echo $INGEST_HOME
+# echo $collection
+# echo $frombase
+# echo $tobase
+
+# exit
+
+
+if [ -f "$frombase" ]; then
+	from=$frombase
+elif [ -d "$frombase" ]; then
+	from=$frombase/database.cfg 
+else
+	echo from database $frombase not recognised
+fi
+
+unset -v CATALOG DATABASE ACCESSION_DIR 
+
+source $from
+
+# echo $CATALOG
+
+# ~/WORK/DEA/database/INGEST/tmp1/manifest.txt
+export fromCATALOG=${fromCATALOG:-$CATALOG} 
+
+# echo $fromCATALOG
+
+# ~/WORK/DEA/database/INGEST/tmp1/.DATABASE
+export fromDATABASE=${fromDATABASE:-$DATABASE}
+# ~/WORK/DEA/database/INGEST/tmp1/ACCESSION
+export fromACCESSION_DIR=${fromACCESSION_DIR:-$ACCESSION_DIR}
+
+# we're all about the accession we are copying from. Let's find the information 
+# we need later while we are here. 
+
+read MIMSACC AMSACC < <(cat $fromCATALOG  |
+	gawk 'BEGIN{FS="\t"}$4~/'${collection}'/{print $3 "=" $4, $6}' | uniq )
+
+# get a collection title from the indexfile
+export COLLECTION_TITLE=$(grep $collection $fromACCESSION_DIR/index.html  |
+	sed 's=^.*>\([^<]*\)</a></li>$=\1=' )
+
+
+if [ -f "$tobase" ]; then
+	to=$tobase
+elif [ -d "$tobase" ]; then
+	to=$tobase/database.cfg 
+fi
+
+unset -v CATALOG DATABASE ACCESSION_DIR 
+
+source $to 
+
+# ~/WORK/DEA/database/INGEST/tmp/manifest.txt
+export toCATALOG=${toCATALOG:-$CATALOG}
+# ~/WORK/DEA/database/INGEST/tmp/.DATABASE
+export toDATABASE=${toDATABASE:-$DATABASE}
+# ~/WORK/DEA/database/INGEST/tmp/ACCESSION
+export toACCESSION_DIR=${toACCESSION_DIR:-$ACCESSION_DIR}
+
+unset -v CATALOG DATABASE ACCESSION_DIR 
+
+# find in the catalog (manifest.txt file) the files that we want to move
+# copy the shasum files from the fromDATABASE (.DATABASE) to the toDATABASE 
+# write the catalog entries to the toCATALOG
+# head -n20 ${fromCATALOG} | awk -v TO=$toDATABASE -v FROM=$fromDATABASE -v CATALOG=$toCATALOG --source '
+# first annotate the toCATALOG
+
+if false ; then 
+	echo "INGEST_HOME=${INGEST_HOME}"
+	echo  "SCRIPTVERSION=$SCRIPTVERSION"
+	
+	echo "fromCATALOG=${fromCATALOG}" 
+	echo "fromDATABASE=${fromDATABASE}"
+	echo "fromACCESSION_DIR=${fromACCESSION_DIR}"
+	
+	echo "toCATALOG=${toCATALOG}"
+	echo "toDATABASE=${toDATABASE}"
+	echo "toACCESSION_DIR=${toACCESSION_DIR}"
+	
+	echo "CATALOG=$CATALOG"
+	echo "DATABASE=$DATABASE"
+	echo  "ACCESSION_DIR=$ACCESSION_DIR" 
+
+	echo "COLLECTION=$collection"
+	echo "COLLECTION_TITLE=\"$COLLECTION_TITLE\""
+	exit 
+fi 
+
+{
+echo "# database script version: $SCRIPTVERSION"
+echo "# database scripts run by ${USER}@${HOSTNAME} at `date` "
+echo "# Collection ${collection} in $fromDATABASE with manifest $fromCATALOG "
+echo "# was copied to $toDATABASE with manifest $toCATALOG" 
+echo "# Using script $0"
+} >> $toCATALOG
+
+cat ${fromCATALOG} |
+    awk -v TO=$toDATABASE \
+	-v FROM=$fromDATABASE \
+	-v CATALOG=$toCATALOG \
+	-v COLLECTION=$collection \
+	--source '
+	/^#/{next}
+	$4~COLLECTION{ dir=substr($1,1,2)
+	  file=substr($1,3)
+	  todir= TO "/" dir
+	  cmd="test -d " todir
+	  if(system(cmd)==1){
+		cmd2="mkdir " todir
+		system(cmd2)
+		close(cmd2)
+		}
+	  close(cmd)
+	  cmd="test -e " todir "/" file
+	  if(system(cmd)==1){
+		cmd2="cp -v " FROM "/" dir "/" file " " todir
+		system(cmd2)
+		close(cmd2)
+		}
+	  else {print todir "/" file " already exists"} 
+	  }
+	$4~COLLECTION{ print >> CATALOG } 
+	' 
+
+# use create_linked_data to recreate the accessions in ACCESSION
+
+export CATALOG=$toCATALOG
+export DATABASE=$toDATABASE
+export INDEXFILE=$toACCESSION_DIR/index.html
+
+# we may end up combining large data catalogs. We DO NOT want to be checking 
+# existing links for the entire new catalog. Instead grep only for identifiers 
+# that are in the incoming catalog. 
+
+# Column 4 are collection UUIDs 
+#                                       this delimiter v is a TAB
+# The 2nd argument passed to create_linked_data is a regex! 
+# Make sure it picks the right part of what is needed to be found. If we just
+# grep for the COLLECTION we may snag lines that refer to the collection as
+# parent so we only want the 4th column in the manifest and we must be explicit
+# in trapping it. 
+# for COLLECTION in `grep -v "^#" $fromCATALOG  | cut -d\	 -f4 | uniq`; do 
+
+	$INGEST_HOME/create_linked_data ${toACCESSION_DIR} \
+	'^[[:xdigit:]]{96}	[[:xdigit:]]{8}-([[:xdigit:]]{4}-){3}[[:xdigit:]]{12}	[[:digit:]]{8}T[[:digit:]]{4}	'${collection}'	'
+
+# done
+
+# still need to copy the ABOUT contents and link the AMS accession.
+# depend on code from the ingest script and modify appropriately.
+COLLECTION_DIR=${toACCESSION_DIR}/${MIMSACC} 
+
+cp -ai ${fromACCESSION_DIR}/${MIMSACC}/ABOUT ${COLLECTION_DIR}
+
+ln -s $(basename ${COLLECTION_DIR}) ${toACCESSION_DIR}/${AMSACC} 
+
+$INGEST_HOME/update_index_file
+
+
+
+
+
+#
+# vi: se tw=0 :
+# 
+

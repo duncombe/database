@@ -1,0 +1,30 @@
+#! /bin/bash
+INDEXFILE=${1:?}
+cat <<-ENDIN > $INDEXFILE
+	<!DOCTYPE html>
+	<html>
+	
+	<head>
+	<title>MIMS Data</title>
+	</head>
+	
+	<body>
+	
+	<h1>MIMS Data Accessions Subset</h1>
+	<h2>Accessions List</h2>
+	
+	<a href="../">Parent directory</a>
+
+	<ul>
+	<!-- PLACE NEW ACCESSION HERE -->
+	<!-- START OF LIST MARKER -->
+	<!-- <li> <a href="ACCESSION-UUID/REVISION-DATA">AMSACC</a> &nbsp; <a href="ACCESSION-UUID">TITLE</a></li> -->
+	<!-- END OF LIST MARKER -->
+	</ul>
+	<p><br>
+        <a href="http://data.ocean.gov.za">MIMS Home</a>
+        <p><br>
+	</body>
+	</html> 
+ENDIN
+echo Created new index file \($INDEXFILE\)
