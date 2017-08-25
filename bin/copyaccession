@@ -60,6 +60,11 @@ export fromACCESSION_DIR=${fromACCESSION_DIR:-$ACCESSION_DIR}
 read MIMSACC AMSACC < <(cat $fromCATALOG  |
 	gawk 'BEGIN{FS="\t"}$4~/'${collection}'/{print $3 "=" $4, $6}' | uniq )
 
+# get a collection title from the indexfile
+export COLLECTION_TITLE=$(grep $collection $fromACCESSION_DIR/index.html  |
+	sed 's=^.*>\([^<]*\)</a></li>$=\1=' )
+
+
 if [ -f "$tobase" ]; then
 	to=$tobase
 elif [ -d "$tobase" ]; then
@@ -100,7 +105,9 @@ if false ; then
 	echo "CATALOG=$CATALOG"
 	echo "DATABASE=$DATABASE"
 	echo  "ACCESSION_DIR=$ACCESSION_DIR" 
-	
+
+	echo "COLLECTION=$collection"
+	echo "COLLECTION_TITLE=\"$COLLECTION_TITLE\""
 	exit 
 fi 
 
