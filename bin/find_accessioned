@@ -1,5 +1,29 @@
+#!/bin/bash
+
 NOTFOUND=false
-if getopts ":r" TRASH ; then NOTFOUND=true; fi
+
+function printhelp(){
+	cat <<-ENDIN
+		Usage: $0 [-r] [-h] 
+		   Finds directories under the current that have been accessioned (indicated
+		   by the presence of an accession* file).
+		      -r reverses finding an accessioned file
+		      -h prints this message
+		ENDIN
+}
+
+while getopts "rh" TRASH ; do
+	case $TRASH in
+	r) NOTFOUND=true ;; 
+	h) printhelp 
+	   exit ;;
+	*) 
+		# echo Invalid option $OPTARG
+	   printhelp
+	   exit ;;
+	esac
+	shift
+done 
 
 
 for f in `find . -maxdepth 1 \( -type d -o -type l \) -print`; do
