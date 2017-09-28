@@ -96,7 +96,18 @@ echo Made catalog
 
 echo Creating linked data \(may take a while\) ...
 
-{ ${INGEST_HOME}/create_linked_data ${ACCESSION_DIR} || exit 6 ; } | tee -a ${LOGFILE}
+# retrieve the accession date (ACCESSION_DATE) and the uuid (COLLECTION) from
+# the ENVIRONMENT_FILE
+
+ACCESSION_DATE=${ACCESSION_DATE:-`grep "^ACCESSION_DATE\>" $ENVIRONMENT_FILE |
+	awk '{print $3}'`}
+COLLECTION=${COLLECTION:-`grep "^COLLECTION\>" $ENVIRONMENT_FILE |
+	awk '{print $3}'`}
+
+REGEX="$ACCESSION_DATE	$COLLECTION"
+
+{ ${INGEST_HOME}/create_linked_data ${ACCESSION_DIR} "${REGEX}" || exit 6 ; } |
+	tee -a ${LOGFILE}
 
 echo Created linked data
 
